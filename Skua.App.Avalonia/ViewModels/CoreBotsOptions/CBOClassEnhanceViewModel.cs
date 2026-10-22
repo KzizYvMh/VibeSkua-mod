@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 using Skua.Core.Models;
 using Skua.Core.Models.Items;
+using Skua.Core.Scripts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -115,6 +116,12 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
         if (!OfferAlreadyEnhancedItems(entry))
             return;
 
+        if (!await Task.Run(CoreAdvancedPatcher.EnsurePatched))
+        {
+            _dialogService.ShowMessageBox("Could not add class enhance support to Scripts/CoreAdvanced.cs (the file changed or is not writable). Update the scripts and try again.", "Enhance");
+            return;
+        }
+
         string scriptPath = Path.Combine(ClientFileSources.SkuaScriptsDIR, "ClassEnhanceTemp.cs");
         File.WriteAllText(scriptPath, $@"//cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
@@ -125,14 +132,17 @@ public class ClassEnhanceTemp
 {{
     public void ScriptMain(IScriptInterface bot)
     {{
-        string map = bot.Map.FullName;
+        // Map.Name has no room number; CoreBots.Join would turn ""battleon-3"" into an invalid ""battleon-3-<room>"".
+        string map = bot.Map.Name;
         new CoreAdvanced().EnhanceEquippedWithProfile(""{entry.Serialize()}"");
-        if (bot.Map.FullName != map)
+        if (!string.IsNullOrEmpty(map) && !string.Equals(bot.Map.Name, map, System.StringComparison.OrdinalIgnoreCase))
             CoreBots.Instance.Join(map);
     }}
 }}");
         _manager.SetLoadedScript(scriptPath);
-        await _manager.StartScript();
+        Exception? error = await _manager.StartScript();
+        if (error != null)
+            _dialogService.ShowMessageBox($"The enhance script could not start:\n\n{error.Message}", "Enhance");
     }
 
     /// <summary>
