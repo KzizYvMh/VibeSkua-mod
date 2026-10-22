@@ -13,6 +13,7 @@ using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models;
 using Skua.Core.AppStartup;
+using Skua.Core.Utils;
 using Skua.Shared.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
@@ -135,80 +136,14 @@ public partial class TabbedHostWindow : Window
         public int Left, Top, Right, Bottom;
     }
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern IntPtr CreateJobObject(IntPtr lpJobAttributes, string? lpName);
+    // Children are no longer put in a KILL_ON_JOB_CLOSE job object: a process can never leave a job,
+    // which would kill tabs that were moved to another launcher. Each child watches its host pid instead.
 
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool SetInformationJobObject(IntPtr hJob, int JobObjectInformationClass, IntPtr lpJobObjectInfo, uint cbJobObjectInfoLength);
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
 
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct JOBOBJECT_BASIC_LIMIT_INFORMATION
-    {
-        public long PerProcessUserTimeLimit;
-        public long PerJobUserTimeLimit;
-        public uint LimitFlags;
-        public UIntPtr MinimumWorkingSetSize;
-        public UIntPtr MaximumWorkingSetSize;
-        public uint ActiveProcessLimit;
-        public UIntPtr Affinity;
-        public uint PriorityClass;
-        public uint SchedulingClass;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct IO_COUNTERS
-    {
-        public ulong ReadOperationCount;
-        public ulong WriteOperationCount;
-        public ulong OtherOperationCount;
-        public ulong ReadTransferCount;
-        public ulong WriteTransferCount;
-        public ulong OtherTransferCount;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct JOBOBJECT_EXTENDED_LIMIT_INFORMATION
-    {
-        public JOBOBJECT_BASIC_LIMIT_INFORMATION BasicLimitInformation;
-        public IO_COUNTERS IoInfo;
-        public UIntPtr ProcessMemoryLimit;
-        public UIntPtr JobMemoryLimit;
-        public UIntPtr PeakProcessMemoryLimit;
-        public UIntPtr PeakJobMemoryLimit;
-    }
-
-    private static IntPtr _childJobHandle = IntPtr.Zero;
-
-    private static void EnsureChildJobObject()
-    {
-        if (_childJobHandle != IntPtr.Zero) return;
-        try
-        {
-            _childJobHandle = CreateJobObject(IntPtr.Zero, null);
-            if (_childJobHandle != IntPtr.Zero)
-            {
-                var info = new JOBOBJECT_EXTENDED_LIMIT_INFORMATION();
-                info.BasicLimitInformation.LimitFlags = 0x2000; // JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
-                int length = Marshal.SizeOf(typeof(JOBOBJECT_EXTENDED_LIMIT_INFORMATION));
-                IntPtr extendedInfoPtr = Marshal.AllocHGlobal(length);
-                try
-                {
-                    Marshal.StructureToPtr(info, extendedInfoPtr, false);
-                    SetInformationJobObject(_childJobHandle, 9 /* JobObjectExtendedLimitInformation */, extendedInfoPtr, (uint)length);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(extendedInfoPtr);
-                }
-            }
-        }
-        catch { }
-    }
+    private const uint SMTO_ABORTIFHUNG = 0x0002;
+    private const int WM_SKUA_SET_HOST = 0x0400 + 441;
     #endregion
 
     #region Tab State
@@ -218,9 +153,13 @@ public partial class TabbedHostWindow : Window
         public IntPtr ChildHwnd { get; set; } = IntPtr.Zero;
         public bool IsThrottled { get; set; } = false;
         public bool IsCustomNamed { get; set; } = false;
+        public TextBlock? TitleBlock { get; set; }
     }
 
     private readonly string[] _initialArgs;
+    private readonly bool _startEmpty;
+    private LauncherHostInfo? _hostInfo;
+    private bool _closeConfirmed = false;
     private readonly Dictionary<TabItem, TabInfo> _tabs = new();
     private bool _needsReposition = false;
     private bool _isRepositioning = false;
@@ -276,9 +215,12 @@ public partial class TabbedHostWindow : Window
 
     public TabbedHostWindow(string rawInitialArgs) : this(ParseRawCommandLine(rawInitialArgs)) { }
 
-    public TabbedHostWindow(string[]? initialArgs)
+    public TabbedHostWindow(string[]? initialArgs) : this(initialArgs, false) { }
+
+    public TabbedHostWindow(string[]? initialArgs, bool startEmpty)
     {
         _initialArgs = initialArgs ?? Array.Empty<string>();
+        _startEmpty = startEmpty;
         InitializeComponent();
         Title = $"VibeSkua V{Skua.Core.Models.ClientFileSources.DisplayVersion}";
 
@@ -291,7 +233,7 @@ public partial class TabbedHostWindow : Window
         SizeChanged += (s, e) => { DoReposition(); UpdateTabScrollButtons(); };
         
         PropertyChanged += (s, e) => { if (e.Property == WindowStateProperty || e.Property == IsVisibleProperty) DoReposition(); };
-        Activated += (s, e) => { DoReposition(); UpdateTabScrollButtons(); };
+        Activated += (s, e) => { DoReposition(); UpdateTabScrollButtons(); UpdateRegistry(focused: true); };
         Closing += OnWindowClosing;
         Closed += OnWindowClosed;
 
@@ -299,7 +241,9 @@ public partial class TabbedHostWindow : Window
         StrongReferenceMessenger.Default.Register<TabbedHostWindow, ScriptSchedulerViewModel.ArmySchedulerMessage>(this, (r, m) => r.OnArmySchedulerStart(m));
         StrongReferenceMessenger.Default.Register<TabbedHostWindow, ScriptSchedulerViewModel.ArmySchedulerStopMessage>(this, (r, m) => r.OnArmySchedulerStop(m));
 
-        StartPipeServer();
+        StartPipeServer(LauncherRegistry.PipeNameFor(Environment.ProcessId));
+        if (App.IsPrimaryLauncher)
+            StartPipeServer(LauncherRegistry.LegacyPipeName);
 
         TabScrollViewer.PointerWheelChanged += (s, e) =>
         {
@@ -427,7 +371,38 @@ public partial class TabbedHostWindow : Window
         }
         catch { }
 
-        AddNewInstance(_initialArgs);
+        _hostInfo = LauncherRegistry.RegisterCurrent(_hostHwnd.ToInt64());
+        Title = $"VibeSkua V{Skua.Core.Models.ClientFileSources.DisplayVersion} - {_hostInfo.Name}";
+
+        if (_startEmpty)
+            UpdateEmptyState();
+        else
+            AddNewInstance(_initialArgs);
+    }
+
+    private void UpdateRegistry(bool focused = false)
+    {
+        if (_hostInfo == null || _isClosing) return;
+        _hostInfo.TabCount = _tabs.Count;
+        if (focused)
+            _hostInfo.LastFocusTicks = DateTime.UtcNow.Ticks;
+        LauncherHostInfo snapshot = new()
+        {
+            Pid = _hostInfo.Pid,
+            Hwnd = _hostInfo.Hwnd,
+            Index = _hostInfo.Index,
+            TabCount = _hostInfo.TabCount,
+            StartTimeTicks = _hostInfo.StartTimeTicks,
+            LastFocusTicks = _hostInfo.LastFocusTicks
+        };
+        Task.Run(() => LauncherRegistry.Write(snapshot));
+    }
+
+    private void UpdateEmptyState()
+    {
+        bool isEmpty = _tabs.Count == 0;
+        if (EmptyStatePanel != null) EmptyStatePanel.IsVisible = isEmpty;
+        if (isEmpty && LoadingIndicator != null) LoadingIndicator.IsVisible = false;
     }
 
     private IntPtr HostWindowSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, nuint uIdSubclass, IntPtr dwRefData)
@@ -535,7 +510,7 @@ public partial class TabbedHostWindow : Window
         return DefSubclassProc(hWnd, uMsg, wParam, lParam);
     }
 
-    private void AttachChildWindow(TabInfo info, IntPtr childHwnd)
+    private void AttachChildWindow(TabInfo info, IntPtr childHwnd, bool fromSpawn = true)
     {
         if (info.ChildHwnd != IntPtr.Zero) return;
         
@@ -557,13 +532,39 @@ public partial class TabbedHostWindow : Window
 
         DoReposition();
 
+        // Adopted tabs were not spawned here, so they must not release a spawn in progress.
+        if (!fromSpawn) return;
+
         _isSpawning = false;
         ProcessNextSpawn();
     }
 
     private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
     {
+        int runningTabs = _tabs.Values.Count(t => t.Process != null && !SafeHasExited(t.Process));
+        if (!_closeConfirmed && runningTabs > 0 && e.CloseReason == WindowCloseReason.WindowClosing)
+        {
+            // Ask outside of the Closing event, then close again with the confirmation flag set.
+            e.Cancel = true;
+            Dispatcher.UIThread.Post(() =>
+            {
+                string launcherName = _hostInfo?.Name ?? "this launcher";
+                bool? answer = Ioc.Default.GetService<IDialogService>()?.ShowMessageBox(
+                    $"{runningTabs} account(s) are still running in {launcherName}. Closing it will close them too.\r\n\r\nClose anyway?",
+                    "Close Launcher",
+                    true);
+                if (answer == true)
+                {
+                    _closeConfirmed = true;
+                    Close();
+                }
+            });
+            return;
+        }
+
         _isClosing = true;
+        if (_hostInfo != null)
+            LauncherRegistry.Remove(_hostInfo.Pid);
         App.DisposeTrayIcon();
         try { _pipeCts.Cancel(); } catch { }
 
@@ -587,8 +588,15 @@ public partial class TabbedHostWindow : Window
         }
     }
 
+    private static bool SafeHasExited(Process process)
+    {
+        try { return process.HasExited; } catch { return true; }
+    }
+
     private void OnWindowClosed(object? sender, EventArgs e)
     {
+        if (_hostInfo != null)
+            LauncherRegistry.Remove(_hostInfo.Pid);
         App.DisposeTrayIcon();
         try
         {
@@ -607,7 +615,7 @@ public partial class TabbedHostWindow : Window
     #endregion
 
     #region Pipe Server
-    private void StartPipeServer()
+    private void StartPipeServer(string pipeName)
     {
         Task.Run(async () =>
         {
@@ -617,7 +625,7 @@ public partial class TabbedHostWindow : Window
                 try
                 {
                     pipeServer = new NamedPipeServerStream(
-                        "VibeSkuaTabHostPipe",
+                        pipeName,
                         PipeDirection.In,
                         NamedPipeServerStream.MaxAllowedServerInstances,
                         PipeTransmissionMode.Byte,
@@ -634,7 +642,11 @@ public partial class TabbedHostWindow : Window
                     using (StreamReader sr = new(pipeServer))
                     {
                         string? line = await sr.ReadLineAsync();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        if (!string.IsNullOrWhiteSpace(line) && line.TrimStart().StartsWith("{"))
+                        {
+                            HandlePipeCommand(line);
+                        }
+                        else if (!string.IsNullOrWhiteSpace(line))
                         {
                             string[]? parsedArgs = null;
                             try
@@ -700,6 +712,252 @@ public partial class TabbedHostWindow : Window
             args.Add(current.ToString());
 
         return args.ToArray();
+    }
+
+    private sealed class PipeCommand
+    {
+        public string? Cmd { get; set; }
+        public int Pid { get; set; }
+        public long Hwnd { get; set; }
+        public string? Title { get; set; }
+        public bool CustomNamed { get; set; }
+    }
+
+    private void HandlePipeCommand(string line)
+    {
+        PipeCommand? command;
+        try
+        {
+            command = System.Text.Json.JsonSerializer.Deserialize<PipeCommand>(line);
+        }
+        catch
+        {
+            return;
+        }
+
+        if (command?.Cmd == "adopt" && command.Pid != 0 && command.Hwnd != 0)
+        {
+            Dispatcher.UIThread.Post(() => AdoptTab(command.Pid, new IntPtr(command.Hwnd), command.Title, command.CustomNamed));
+        }
+    }
+    #endregion
+
+    #region Moving Tabs Between Launchers
+    private static bool SetChildHost(IntPtr childHwnd, IntPtr hostHwnd, int hostPid)
+    {
+        IntPtr sent = SendMessageTimeout(childHwnd, WM_SKUA_SET_HOST, hostHwnd, new IntPtr(hostPid), SMTO_ABORTIFHUNG, 3000, out IntPtr result);
+        return sent != IntPtr.Zero && result == new IntPtr(1);
+    }
+
+    private static string GetHostExecutablePath()
+    {
+        return Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName ?? "";
+    }
+
+    /// <summary>
+    /// Starts a new empty launcher and waits until it has registered itself.
+    /// </summary>
+    private static LauncherHostInfo? StartEmptyLauncher()
+    {
+        try
+        {
+            string exe = GetHostExecutablePath();
+            ProcessStartInfo psi = new(exe)
+            {
+                WorkingDirectory = Path.GetDirectoryName(exe) ?? AppContext.BaseDirectory
+            };
+            psi.ArgumentList.Add(LauncherRegistry.EmptyArg);
+
+            using Process? proc = Process.Start(psi);
+            if (proc == null)
+                return null;
+
+            for (int attempt = 0; attempt < 150; attempt++)
+            {
+                LauncherHostInfo? host = LauncherRegistry.GetHost(proc.Id);
+                if (host != null && host.Hwnd != 0)
+                    return host;
+                if (proc.HasExited)
+                    return null;
+                Thread.Sleep(100);
+            }
+        }
+        catch { }
+        return null;
+    }
+
+    private void OpenNewEmptyLauncher()
+    {
+        Task.Run(StartEmptyLauncher);
+    }
+
+    /// <summary>
+    /// Moves a running account to another launcher without restarting it.
+    /// </summary>
+    /// <param name="targetPid">Pid of the target launcher, or null to open a new one.</param>
+    private async void MoveTabToLauncher(TabItem tab, int? targetPid)
+    {
+        var dialogService = Ioc.Default.GetService<IDialogService>();
+        if (!_tabs.TryGetValue(tab, out TabInfo? info))
+            return;
+
+        if (info.ChildHwnd == IntPtr.Zero || info.Process == null || SafeHasExited(info.Process))
+        {
+            dialogService?.ShowMessageBox("This account is still loading. Try again once its window is open.", "Move to Launcher");
+            return;
+        }
+
+        LauncherHostInfo? target = targetPid == null
+            ? await Task.Run(StartEmptyLauncher)
+            : await Task.Run(() => LauncherRegistry.GetHost(targetPid.Value));
+
+        if (target == null || target.Hwnd == 0 || target.Pid == Environment.ProcessId)
+        {
+            dialogService?.ShowMessageBox("Could not reach the target launcher. It may have been closed.", "Move to Launcher");
+            return;
+        }
+
+        // The tab may have been closed or moved while we were waiting.
+        if (_isClosing || !_tabs.TryGetValue(tab, out info) || info.ChildHwnd == IntPtr.Zero || SafeHasExited(info.Process))
+            return;
+
+        IntPtr childHwnd = info.ChildHwnd;
+        int childPid = info.Process.Id;
+        string title = info.TitleBlock?.Text ?? "";
+        bool customNamed = info.IsCustomNamed;
+
+        // Re-point the client's host watcher first, so closing this launcher afterwards cannot kill it.
+        if (!SetChildHost(childHwnd, new IntPtr(target.Hwnd), target.Pid))
+        {
+            dialogService?.ShowMessageBox("The account did not respond (it may be from an older version or busy). Try again.", "Move to Launcher");
+            return;
+        }
+
+        DetachTab(tab);
+
+        string line = System.Text.Json.JsonSerializer.Serialize(new PipeCommand
+        {
+            Cmd = "adopt",
+            Pid = childPid,
+            Hwnd = childHwnd.ToInt64(),
+            Title = title,
+            CustomNamed = customNamed
+        });
+
+        bool sent = await Task.Run(() => LauncherRegistry.TrySend(target.Pid, line, 5000));
+        if (!sent)
+        {
+            // Take it back so the account is never left without a launcher.
+            SetChildHost(childHwnd, _hostHwnd, Environment.ProcessId);
+            AdoptTab(childPid, childHwnd, title, customNamed);
+            dialogService?.ShowMessageBox("Could not reach the target launcher. The account was kept here.", "Move to Launcher");
+        }
+    }
+
+    /// <summary>
+    /// Removes a tab from this launcher without killing its client process.
+    /// </summary>
+    private void DetachTab(TabItem tab)
+    {
+        if (!_tabs.TryGetValue(tab, out TabInfo? info))
+            return;
+
+        _tabs.Remove(tab);
+        if (_lastSelectedTab == tab)
+            _lastSelectedTab = null;
+        if (info.ChildHwnd != IntPtr.Zero)
+        {
+            if (_lastActiveHwnd == info.ChildHwnd)
+                _lastActiveHwnd = IntPtr.Zero;
+            if (HotKeys.ActiveChildHwnd == info.ChildHwnd)
+                HotKeys.ActiveChildHwnd = IntPtr.Zero;
+            SetWindowPos(info.ChildHwnd, IntPtr.Zero, -32000, -32000, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
+        }
+
+        InstancesTabControl.Items.Remove(tab);
+        AfterTabRemoved();
+    }
+
+    /// <summary>
+    /// Takes over a client process that was running in another launcher.
+    /// </summary>
+    private void AdoptTab(int pid, IntPtr childHwnd, string? title, bool customNamed)
+    {
+        if (_isClosing)
+            return;
+        if (_tabs.Values.Any(t => t.Process != null && !SafeHasExited(t.Process) && t.Process.Id == pid))
+            return;
+
+        Process proc;
+        try
+        {
+            proc = Process.GetProcessById(pid);
+            if (proc.HasExited)
+                return;
+        }
+        catch
+        {
+            return;
+        }
+
+        // Make sure the client follows this launcher even if the sender could not tell it.
+        SetChildHost(childHwnd, _hostHwnd, Environment.ProcessId);
+
+        // Throttled so DoReposition sends the un-throttle message once the tab is shown.
+        TabInfo info = new TabInfo { Process = proc, IsCustomNamed = customNamed, IsThrottled = true };
+        string tabName = string.IsNullOrWhiteSpace(title) ? $"Skua {pid}" : title;
+        TabItem newTab = CreateTab(tabName, info);
+        if (!_isGridViewEnabled)
+            InstancesTabControl.SelectedItem = newTab;
+
+        proc.EnableRaisingEvents = true;
+        proc.Exited += (s, e) =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!_isClosing)
+                    CloseTab(newTab);
+            });
+        };
+        if (proc.HasExited)
+        {
+            CloseTab(newTab);
+            return;
+        }
+
+        HotKeys.RegisterSkuaPid((uint)pid);
+        AttachChildWindow(info, childHwnd, fromSpawn: false);
+        if (!_isGridViewEnabled)
+            PostMessage(childHwnd, WM_SKUA_GRIDVIEW, IntPtr.Zero, IntPtr.Zero);
+
+        if (WindowState == WindowState.Minimized)
+            WindowState = WindowState.Normal;
+        Activate();
+    }
+
+    private void PopulateMoveToLauncherMenu(MenuItem parentItem, TabItem tab)
+    {
+        parentItem.Items.Clear();
+
+        List<LauncherHostInfo> others = LauncherRegistry.GetLiveHosts().Where(h => h.Pid != Environment.ProcessId).ToList();
+        foreach (LauncherHostInfo host in others)
+        {
+            int hostPid = host.Pid;
+            MenuItem hostItem = new MenuItem { Header = host.DisplayName };
+            hostItem.Click += (s, ev) => MoveTabToLauncher(tab, hostPid);
+            parentItem.Items.Add(hostItem);
+        }
+
+        if (others.Count > 0)
+            parentItem.Items.Add(new Separator());
+
+        MenuItem newLauncherItem = new MenuItem
+        {
+            Header = "New Launcher",
+            Icon = new MaterialIcon { Kind = MaterialIconKind.Plus, Width = 14, Height = 14 }
+        };
+        newLauncherItem.Click += (s, ev) => MoveTabToLauncher(tab, null);
+        parentItem.Items.Add(newLauncherItem);
     }
     #endregion
 
@@ -901,6 +1159,11 @@ public partial class TabbedHostWindow : Window
     private void AddTabButton_Click(object? sender, RoutedEventArgs e)
     {
         AddNewInstance();
+    }
+
+    private void NewLauncherMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+        OpenNewEmptyLauncher();
     }
 
     private void ScrollTabsLeftButton_Click(object? sender, RoutedEventArgs e)
@@ -1555,11 +1818,22 @@ public partial class TabbedHostWindow : Window
             });
         }
         InstancesTabControl.Items.Remove(tab);
-        UpdateTabScrollButtons();
+        AfterTabRemoved();
+    }
 
+    private void AfterTabRemoved()
+    {
+        UpdateTabScrollButtons();
+        UpdateRegistry();
+
+        // The launcher stays open without tabs; it only closes when the user closes the window.
         if (_tabs.Count == 0 || !InstancesTabControl.Items.OfType<TabItem>().Any())
         {
-            Close();
+            if (_isGridViewEnabled)
+                ExitGridView();
+            _lastActiveHwnd = IntPtr.Zero;
+            HotKeys.ActiveChildHwnd = IntPtr.Zero;
+            UpdateEmptyState();
             return;
         }
 
@@ -1618,6 +1892,77 @@ public partial class TabbedHostWindow : Window
             }
         }
 
+        TabInfo info = new TabInfo();
+        TabItem newTab = CreateTab(tabName, info);
+
+        EnqueueSpawn(() =>
+        {
+            if (_isClosing) return;
+
+            Process p = new Process();
+            p.StartInfo.FileName = Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            p.StartInfo.ArgumentList.Add("--embed");
+            p.StartInfo.ArgumentList.Add(_hostHwnd.ToInt64().ToString());
+            p.StartInfo.ArgumentList.Add("--host-pid");
+            p.StartInfo.ArgumentList.Add(Process.GetCurrentProcess().Id.ToString());
+
+            foreach (string arg in clientArgs)
+            {
+                if (!string.IsNullOrEmpty(arg))
+                    p.StartInfo.ArgumentList.Add(arg);
+            }
+
+            p.EnableRaisingEvents = true;
+            p.Exited += (s, e) =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (!_isClosing)
+                    {
+                        CloseTab(newTab);
+                    }
+                });
+            };
+
+            p.Start();
+            info.Process = p;
+            HotKeys.RegisterSkuaPid((uint)p.Id);
+
+            int pid = p.Id;
+            Task.Run(async () =>
+            {
+                for (int attempt = 0; attempt < 120 && !p.HasExited && info.ChildHwnd == IntPtr.Zero && !_isClosing; attempt++)
+                {
+                    await Task.Delay(50);
+                    if (info.ChildHwnd != IntPtr.Zero) break;
+                    IntPtr childHwnd = FindWindowByProcessId(pid);
+                    if (childHwnd != IntPtr.Zero)
+                    {
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            if (!_isClosing && info.ChildHwnd == IntPtr.Zero)
+                            {
+                                AttachChildWindow(info, childHwnd);
+                            }
+                        });
+                        break;
+                    }
+                }
+
+                if (info.ChildHwnd == IntPtr.Zero)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        _isSpawning = false;
+                        ProcessNextSpawn();
+                    });
+                }
+            });
+        });
+    }
+
+    private TabItem CreateTab(string tabName, TabInfo info)
+    {
         #region Tab Header UI
         StackPanel headerPanel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
         
@@ -1686,9 +2031,9 @@ public partial class TabbedHostWindow : Window
 
         closeBtn.PointerEntered += (s, ev) => { closeTxt.Foreground = Brushes.White; closeBtn.Background = new SolidColorBrush(Color.Parse("#EF4444")); };
         closeBtn.PointerExited += (s, ev) => { closeTxt[!TextBlock.ForegroundProperty] = new global::Avalonia.Markup.Xaml.MarkupExtensions.DynamicResourceExtension("SkuaMutedTextBrush"); closeBtn.Background = Brushes.Transparent; };
-        
-        TabInfo info = new TabInfo();
-        
+
+        info.TitleBlock = title;
+
         Action closeEditMode = () =>
         {
             if (!editTitle.IsVisible) return;
@@ -1749,78 +2094,8 @@ public partial class TabbedHostWindow : Window
         }, DispatcherPriority.Background);
         
         _tabs[newTab] = info;
-
-        EnqueueSpawn(() =>
-        {
-            if (_isClosing) return;
-            
-            Process p = new Process();
-            p.StartInfo.FileName = Process.GetCurrentProcess().MainModule?.FileName ?? "";
-            p.StartInfo.ArgumentList.Add("--embed");
-            p.StartInfo.ArgumentList.Add(_hostHwnd.ToInt64().ToString());
-            p.StartInfo.ArgumentList.Add("--host-pid");
-            p.StartInfo.ArgumentList.Add(Process.GetCurrentProcess().Id.ToString());
-
-            foreach (string arg in clientArgs)
-            {
-                if (!string.IsNullOrEmpty(arg))
-                    p.StartInfo.ArgumentList.Add(arg);
-            }
-
-            p.EnableRaisingEvents = true;
-            p.Exited += (s, e) =>
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    if (!_isClosing)
-                    {
-                        CloseTab(newTab);
-                    }
-                });
-            };
-
-            p.Start();
-            info.Process = p;
-            try
-            {
-                EnsureChildJobObject();
-                if (_childJobHandle != IntPtr.Zero)
-                    AssignProcessToJobObject(_childJobHandle, p.Handle);
-            }
-            catch { }
-            HotKeys.RegisterSkuaPid((uint)p.Id);
-
-            int pid = p.Id;
-            Task.Run(async () =>
-            {
-                for (int attempt = 0; attempt < 120 && !p.HasExited && info.ChildHwnd == IntPtr.Zero && !_isClosing; attempt++)
-                {
-                    await Task.Delay(50);
-                    if (info.ChildHwnd != IntPtr.Zero) break;
-                    IntPtr childHwnd = FindWindowByProcessId(pid);
-                    if (childHwnd != IntPtr.Zero)
-                    {
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            if (!_isClosing && info.ChildHwnd == IntPtr.Zero)
-                            {
-                                AttachChildWindow(info, childHwnd);
-                            }
-                        });
-                        break;
-                    }
-                }
-
-                if (info.ChildHwnd == IntPtr.Zero)
-                {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        _isSpawning = false;
-                        ProcessNextSpawn();
-                    });
-                }
-            });
-        });
+        UpdateEmptyState();
+        UpdateRegistry();
 
         #region Tab Interactions
         closeBtn.PointerPressed += (s, ev) => 
@@ -1868,9 +2143,22 @@ public partial class TabbedHostWindow : Window
             PopulateAddToGroupMenu(addToGroupItem, newTab, info, title.Text);
         }
 
-        UpdateGroupSubMenu();
-        headerPanel.ContextRequested += (s, ev) => UpdateGroupSubMenu();
-        newTab.ContextRequested += (s, ev) => UpdateGroupSubMenu();
+        MenuItem moveToLauncherItem = new MenuItem
+        {
+            Header = "Move to Launcher",
+            Icon = new MaterialIcon { Kind = MaterialIconKind.ApplicationExport, Width = 14, Height = 14 }
+        };
+        ctx.Items.Add(moveToLauncherItem);
+
+        void UpdateContextSubMenus()
+        {
+            UpdateGroupSubMenu();
+            PopulateMoveToLauncherMenu(moveToLauncherItem, newTab);
+        }
+
+        UpdateContextSubMenus();
+        headerPanel.ContextRequested += (s, ev) => UpdateContextSubMenus();
+        newTab.ContextRequested += (s, ev) => UpdateContextSubMenus();
 
         headerPanel.ContextMenu = ctx;
         newTab.ContextMenu = ctx;
@@ -1947,6 +2235,8 @@ public partial class TabbedHostWindow : Window
             }
         });
         #endregion
+
+        return newTab;
     }
 
     #region Group Assignment Helper

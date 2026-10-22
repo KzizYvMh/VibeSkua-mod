@@ -57,10 +57,60 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         _startWithScript = _settingsService.Get("AutoStartScript", false);
         _showTags = _settingsService.Get("ShowAccountTags", true);
         _showGridView = _settingsService.Get("ShowGridView", false);
+        _selectedLaunchTarget = LaunchTargets[0];
         SetupSettingsWatcher();
     }
 
     private readonly string _exePath = SkuaExecutableLocator.ExecutablePath;
+
+    // Launcher Targets
+    /// <summary>Let the client decide (existing launcher, or a new one if none is open).</summary>
+    public const int DefaultLauncherTarget = 0;
+    /// <summary>Open the account(s) in a brand new launcher window.</summary>
+    public const int NewLauncherTarget = -1;
+
+    public sealed record LaunchTargetOption(string Name, int Pid)
+    {
+        public override string ToString() => Name;
+    }
+
+    public RangedObservableCollection<LaunchTargetOption> LaunchTargets { get; } = new()
+    {
+        new("Current Launcher", DefaultLauncherTarget),
+        new("New Launcher", NewLauncherTarget)
+    };
+
+    [ObservableProperty]
+    private LaunchTargetOption? _selectedLaunchTarget;
+
+    private int SelectedLauncherPid => SelectedLaunchTarget?.Pid ?? DefaultLauncherTarget;
+
+    /// <summary>
+    /// Re-reads the open launchers, keeping the current choice when it still exists.
+    /// </summary>
+    public void RefreshLaunchTargets()
+    {
+        int selectedPid = SelectedLauncherPid;
+        List<LaunchTargetOption> options = new()
+        {
+            new("Current Launcher", DefaultLauncherTarget),
+            new("New Launcher", NewLauncherTarget)
+        };
+        options.AddRange(LauncherRegistry.GetLiveHosts().Select(h => new LaunchTargetOption(h.DisplayName, h.Pid)));
+
+        LaunchTargets.ReplaceRange(options);
+        SelectedLaunchTarget = options.FirstOrDefault(o => o.Pid == selectedPid) ?? options[0];
+    }
+
+    /// <summary>
+    /// Starts one account in a specific launcher (pid), a new launcher, or the default one.
+    /// </summary>
+    public void StartAccountInLauncher(IAccountItemViewModel account, int launcherTarget)
+    {
+        _syncThemes = _settingsService.Get("syncTheme", false);
+        _LaunchAcc(account.Username, account.Password, account.DisplayName, StartWithScript, launcherTarget);
+    }
+
     private readonly ISettingsService _settingsService;
     private readonly IDialogService _dialogService;
     private readonly IFileDialogService _fileService;
@@ -232,9 +282,11 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             _isLaunching = true;
             _syncThemes = _settingsService.Get("syncTheme", false);
             List<IAccountItemViewModel> selectedAccounts = Accounts.Where(acc => acc.UseCheck).ToList();
+            int launcherTarget = SelectedLauncherPid;
             foreach (IAccountItemViewModel acc in selectedAccounts)
             {
-                _LaunchAcc(acc.Username, acc.Password, acc.DisplayName, StartWithScript);
+                Process? process = _LaunchAcc(acc.Username, acc.Password, acc.DisplayName, StartWithScript, launcherTarget);
+                launcherTarget = _NextBatchLauncherTarget(launcherTarget, process);
                 await Task.Delay(1000);
             }
         }
@@ -264,9 +316,11 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             _isLaunching = true;
             _syncThemes = _settingsService.Get("syncTheme", false);
             List<IAccountItemViewModel> allAccounts = Accounts.ToList();
+            int launcherTarget = SelectedLauncherPid;
             foreach (IAccountItemViewModel acc in allAccounts)
             {
-                _LaunchAcc(acc.Username, acc.Password, acc.DisplayName, StartWithScript);
+                Process? process = _LaunchAcc(acc.Username, acc.Password, acc.DisplayName, StartWithScript, launcherTarget);
+                launcherTarget = _NextBatchLauncherTarget(launcherTarget, process);
                 await Task.Delay(1000);
             }
         }
@@ -405,7 +459,17 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
 
         bool runScript = withScript || StartWithScript;
-        _LaunchAcc(account.Username, account.Password, account.DisplayName, runScript);
+        _LaunchAcc(account.Username, account.Password, account.DisplayName, runScript, SelectedLauncherPid);
+    }
+
+    /// <summary>
+    /// After the first account of a "New Launcher" batch, the rest go to the launcher that account opened.
+    /// </summary>
+    private static int _NextBatchLauncherTarget(int launcherTarget, Process? launched)
+    {
+        if (launcherTarget == NewLauncherTarget && launched != null)
+            return launched.Id;
+        return launcherTarget;
     }
 
     private async void _StartGroup(IGroupItemViewModel group, bool withScript)
@@ -426,9 +490,11 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
             bool runScript = withScript || StartWithScript;
             List<IAccountItemViewModel> groupAccounts = group.Accounts.ToList();
+            int launcherTarget = SelectedLauncherPid;
             foreach (IAccountItemViewModel account in groupAccounts)
             {
-                _LaunchAcc(account.Username, account.Password, account.DisplayName, runScript);
+                Process? process = _LaunchAcc(account.Username, account.Password, account.DisplayName, runScript, launcherTarget);
+                launcherTarget = _NextBatchLauncherTarget(launcherTarget, process);
                 await Task.Delay(1000);
             }
         }
@@ -447,7 +513,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
-    private void _LaunchAcc(string username, string password, string? displayName = null, bool? withScript = null)
+    private Process? _LaunchAcc(string username, string password, string? displayName = null, bool? withScript = null, int launcherTarget = DefaultLauncherTarget)
     {
         try
         {
@@ -483,16 +549,28 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
                 psi.ArgumentList.Add(ScriptPath);
             }
 
+            if (launcherTarget == NewLauncherTarget)
+            {
+                psi.ArgumentList.Add(LauncherRegistry.NewLauncherArg);
+            }
+            else if (launcherTarget > 0)
+            {
+                psi.ArgumentList.Add(LauncherRegistry.LauncherArg);
+                psi.ArgumentList.Add(launcherTarget.ToString());
+            }
+
             Process? process = Process.Start(psi);
             if (process != null)
             {
                 string accountName = !string.IsNullOrWhiteSpace(displayName) ? displayName : username;
                 StrongReferenceMessenger.Default.Send(new AddProcessMessage(process, accountName));
             }
+            return process;
         }
         catch (Exception ex)
         {
             _dialogService.ShowMessageBox($"Error while starting process: {ex.Message}", "Launch Error");
+            return null;
         }
     }
 

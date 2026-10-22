@@ -134,7 +134,13 @@
                         Classes="skua-button"
                         CornerRadius="6"
                         Cursor="Hand"
-                        ToolTip.Tip="Open New Client Tab">
+                        ToolTip.Tip="Open New Client Tab (right-click for a new launcher)">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open New Client Tab" Click="AddTabButton_Click" />
+                            <MenuItem Header="Open New Empty Launcher" Click="NewLauncherMenuItem_Click" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
                     <materialIcons:MaterialIcon Kind="Plus" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
 
@@ -283,6 +289,24 @@
                 <TextBlock Text="Please wait while the game client initializes" Foreground="{DynamicResource SkuaMutedTextBrush}" FontSize="12" HorizontalAlignment="Center" />
             </StackPanel>
             <Border x:Name="HostContainer" Background="Transparent" />
+            <!-- Placed after HostContainer so its button receives clicks -->
+            <StackPanel x:Name="EmptyStatePanel" IsVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                <materialIcons:MaterialIcon Kind="TabPlus" Width="40" Height="40" Foreground="{DynamicResource SkuaMutedTextBrush}" HorizontalAlignment="Center" />
+                <TextBlock Text="No accounts open in this launcher" Foreground="{DynamicResource SkuaTextBrush}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" />
+                <TextBlock Text="Open a new client tab here, or start an account from the Manager and pick this launcher." Foreground="{DynamicResource SkuaMutedTextBrush}" FontSize="12" HorizontalAlignment="Center" />
+                <Button Click="AddTabButton_Click"
+                        Classes="skua-button"
+                        CornerRadius="6"
+                        Padding="14,6"
+                        Margin="0,8,0,0"
+                        Cursor="Hand"
+                        HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <materialIcons:MaterialIcon Kind="Plus" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" VerticalAlignment="Center" />
+                        <TextBlock Text="Open New Client Tab" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
