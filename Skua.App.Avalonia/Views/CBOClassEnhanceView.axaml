@@ -116,7 +116,7 @@
           </Grid>
 
           <TextBlock TextWrapping="Wrap" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}"
-                     Text="Values start as the recommended setup. Changing any slot makes it a custom profile, and then only your selection is used: the weapon takes the Forge special if unlocked, else the Awe one; any special you don't have unlocked becomes the base enhancement only. Uncheck to go back to the recommendation. The Default profile, when checked, applies to every class without a custom profile." />
+                     Text="Values start as the recommended setup. Changing any slot makes it a custom profile, and then only your selection is used: the weapon takes the Forge special if unlocked, else the Awe one; any special you don't have unlocked becomes the base enhancement only. None removes the special (base only), Keep leaves that item as it is (Keep on Weapon (Forge) keeps the whole weapon). Uncheck to go back to the recommendation. The Default profile, when checked, applies to every class without a custom profile." />
         </StackPanel>
       </Border>
     </Grid>

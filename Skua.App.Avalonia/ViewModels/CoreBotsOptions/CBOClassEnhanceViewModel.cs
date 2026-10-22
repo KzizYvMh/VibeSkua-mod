@@ -51,12 +51,13 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
     private readonly IDialogService _dialogService;
     private readonly List<ClassEnhanceEntry> _entries = new();
 
-    // Same IDs as CoreAdvanced: EnhancementType/CapeSpecial/HelmSpecial are pattern IDs, WeaponSpecial is the proc ID
+    // Same IDs as CoreAdvanced: EnhancementType/CapeSpecial/HelmSpecial are pattern IDs, WeaponSpecial is the proc ID.
+    // "Keep" (-1) leaves that item untouched; on WeaponForge it keeps the whole weapon.
     private static readonly Dictionary<string, int> BaseIds = new() { ["Lucky"] = 9, ["Fighter"] = 2, ["Thief"] = 3, ["Hybrid"] = 5, ["Wizard"] = 6, ["Healer"] = 7, ["SpellBreaker"] = 8 };
-    private static readonly Dictionary<string, int> WeaponForgeIds = new() { ["None"] = 0, ["Forge"] = 1, ["Lacerate"] = 7, ["Smite"] = 8, ["Valiance"] = 9, ["Arcanas_Concerto"] = 10, ["Acheron"] = 11, ["Elysium"] = 12, ["Praxis"] = 13, ["Dauntless"] = 14, ["Ravenous"] = 15 };
+    private static readonly Dictionary<string, int> WeaponForgeIds = new() { ["None"] = 0, ["Keep"] = -1, ["Forge"] = 1, ["Lacerate"] = 7, ["Smite"] = 8, ["Valiance"] = 9, ["Arcanas_Concerto"] = 10, ["Acheron"] = 11, ["Elysium"] = 12, ["Praxis"] = 13, ["Dauntless"] = 14, ["Ravenous"] = 15 };
     private static readonly Dictionary<string, int> WeaponAweIds = new() { ["None"] = 0, ["Spiral_Carve"] = 2, ["Awe_Blast"] = 3, ["Health_Vamp"] = 4, ["Mana_Vamp"] = 5, ["Powerword_Die"] = 6 };
-    private static readonly Dictionary<string, int> CapeIds = new() { ["None"] = 0, ["Forge"] = 10, ["Absolution"] = 11, ["Avarice"] = 12, ["Vainglory"] = 24, ["Penitence"] = 29, ["Lament"] = 30 };
-    private static readonly Dictionary<string, int> HelmIds = new() { ["None"] = 0, ["Forge"] = 10, ["Vim"] = 25, ["Examen"] = 26, ["Anima"] = 28, ["Pneuma"] = 27, ["Hearty"] = 32 };
+    private static readonly Dictionary<string, int> CapeIds = new() { ["None"] = 0, ["Keep"] = -1, ["Forge"] = 10, ["Absolution"] = 11, ["Avarice"] = 12, ["Vainglory"] = 24, ["Penitence"] = 29, ["Lament"] = 30 };
+    private static readonly Dictionary<string, int> HelmIds = new() { ["None"] = 0, ["Keep"] = -1, ["Forge"] = 10, ["Vim"] = 25, ["Examen"] = 26, ["Anima"] = 28, ["Pneuma"] = 27, ["Hearty"] = 32 };
 
     public static List<string> BaseEnhancements { get; } = BaseIds.Keys.ToList();
     public static List<string> WeaponForgeSpecials { get; } = WeaponForgeIds.Keys.ToList();
@@ -165,9 +166,19 @@ public class ClassEnhanceTemp
     private static string? SlotOf(InventoryItem item) =>
         item.ItemGroup == "Weapon" ? "weapon" : item.Category == ItemCategory.Cape ? "cape" : item.Category == ItemCategory.Helm ? "helm" : null;
 
+    private static bool KeepsSlot(InventoryItem item, ClassEnhanceEntry profile) => SlotOf(item) switch
+    {
+        "weapon" => profile.WeaponForge == "Keep",
+        "cape" => profile.Cape == "Keep",
+        "helm" => profile.Helm == "Keep",
+        _ => false
+    };
+
     // Mirrors CoreAdvanced.AlreadyHasRequestedEnhancement, ignoring the enhancement level
     private static bool HasProfileEnhancement(InventoryItem item, ClassEnhanceEntry profile)
     {
+        if (KeepsSlot(item, profile))
+            return true;
         if (item.EnhancementLevel <= 0)
             return false;
 

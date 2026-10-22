@@ -6,7 +6,8 @@ old_call="""        // If the item doesnt exist in the forge enh lib, or the pla
             AweEnhancementLibrary();
 """
 new_call="""        // A custom profile from the CoreBots Options "Class Enhance" tab replaces the built-in library
-        if (!ClassEnhanceProfile(className, ref type, ref cSpecial, ref hSpecial, ref wSpecial))
+        string? classProfile = ClassEnhanceProfile(className, ref type, ref cSpecial, ref hSpecial, ref wSpecial);
+        if (classProfile == null)
         {
             // If the item doesnt exist in the forge enh lib, or the player doesn't have the Forge enh unlocked, use Awe enh instead
             if (!ForgeEnhancementLibrary())
@@ -14,10 +15,16 @@ new_call="""        // A custom profile from the CoreBots Options "Class Enhance
         }
 """
 anchor="    public void SmartEnhance(string? className, bool ForceEnh = false)\n"
+old_enh="        EnhanceEquipped((EnhancementType)type, cSpecial, hSpecial, wSpecial);\n"
+new_enh="""        if (classProfile != null)
+            EnhanceEquippedWithProfile(classProfile);
+        else
+            EnhanceEquipped((EnhancementType)type, cSpecial, hSpecial, wSpecial);
+"""
 method='''    /// <summary>
     /// Resolves a "Base|WeaponForge|WeaponAwe|Cape|Helm" profile (CoreBots Options "Class Enhance" tab).
     /// Uses only the chosen specials: weapon takes the Forge one if unlocked, else the Awe one if unlocked;
-    /// any special that isn't unlocked becomes None (base enhancement only).
+    /// any special that isn't unlocked becomes None (base enhancement only). "Keep" leaves that item untouched.
     /// </summary>
     public bool ResolveEnhanceProfile(string profile, out EnhancementType type, out CapeSpecial cape, out HelmSpecial helm, out WeaponSpecial weapon)
     {
@@ -91,10 +98,15 @@ method='''    /// <summary>
             return;
         }
 
-        Core.Logger($"Enhancing equipped items: {type}, weapon {weapon}, cape {cape}, helm {helm}");
+        string[] parts = profile.Split('|');
+        bool keepWeapon = parts[1] == "Keep", keepCape = parts[3] == "Keep", keepHelm = parts[4] == "Keep";
+        Core.Logger($"Enhancing equipped items: {type}, weapon {(keepWeapon ? "Keep" : weapon)}, cape {(keepCape ? "Keep" : cape)}, helm {(keepHelm ? "Keep" : helm)}");
         try
         {
-            AutoEnhance(Bot.Inventory.Items.FindAll(i => i.Equipped && EnhanceableCatagories.Contains(i.Category)), type, cape, helm, weapon);
+            AutoEnhance(Bot.Inventory.Items.FindAll(i => i.Equipped && EnhanceableCatagories.Contains(i.Category)
+                && !(keepWeapon && i.ItemGroup == "Weapon")
+                && !(keepCape && i.Category == ItemCategory.Cape)
+                && !(keepHelm && i.Category == ItemCategory.Helm)), type, cape, helm, weapon);
         }
         catch (Exception e)
         {
@@ -102,19 +114,20 @@ method='''    /// <summary>
         }
     }
 
-    private bool ClassEnhanceProfile(string className, ref EnhancementType? type, ref CapeSpecial cape, ref HelmSpecial helm, ref WeaponSpecial weapon)
+    /// <returns>The class profile, or null when the class has no custom profile.</returns>
+    private string? ClassEnhanceProfile(string className, ref EnhancementType? type, ref CapeSpecial cape, ref HelmSpecial helm, ref WeaponSpecial weapon)
     {
         if (!Core.CBOString($"ClassEnh[{className.ToLower()}]", out string profile) && !Core.CBOString("ClassEnh[*]", out profile))
-            return false;
+            return null;
         if (!ResolveEnhanceProfile(profile, out EnhancementType baseEnh, out cape, out helm, out weapon))
-            return false;
+            return null;
 
         type = baseEnh;
-        Core.Logger($"Class Enhance profile for {className}: {type}, weapon {weapon}, cape {cape}, helm {helm}");
-        return true;
+        Core.Logger($"Class Enhance profile for {className}: {profile}");
+        return profile;
     }
 
 '''
-assert s.count(old_call)==1 and s.count(anchor)==1, "anchors not found"
-s=s.replace(old_call,new_call).replace(anchor,method+anchor)
+assert s.count(old_call)==1 and s.count(anchor)==1 and s.count(old_enh)==1, "anchors not found"
+s=s.replace(old_call,new_call).replace(old_enh,new_enh).replace(anchor,method+anchor)
 open(p,'w',encoding='utf-8',newline='').write(s)
