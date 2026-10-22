@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels.CoreBotsOptions"
+             x:DataType="vms:CBOClassEnhanceViewModel"
+             x:Class="Skua.App.Avalonia.Views.CBOClassEnhanceView">
+  <Grid RowDefinitions="Auto,*" RowSpacing="12" Margin="0">
+
+    <!-- Top Action Bar -->
+    <Border Grid.Row="0"
+            Background="{DynamicResource SkuaSurfaceAltBrush}"
+            BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="12,8">
+      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <materialIcons:MaterialIcon Kind="AutoFix" Width="16" Height="16" Foreground="{DynamicResource SkuaAccentBrush}" VerticalAlignment="Center" />
+          <TextBlock Text="Auto Enhance Profiles Per Class"
+                     FontWeight="Bold"
+                     FontSize="12"
+                     Foreground="{DynamicResource SkuaTextBrush}"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ImportCommand}" ToolTip.Tip="Import profiles from a JSON file">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <materialIcons:MaterialIcon Kind="FileImportOutline" Width="13" Height="13" />
+              <TextBlock Text="Import" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ExportCommand}" ToolTip.Tip="Export enabled profiles to a JSON file">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <materialIcons:MaterialIcon Kind="FileExportOutline" Width="13" Height="13" />
+              <TextBlock Text="Export" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding RefreshInventoryCommand}" ToolTip.Tip="Refresh classes from player inventory">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <materialIcons:MaterialIcon Kind="Refresh" Width="13" Height="13" />
+              <TextBlock Text="Refresh Inventory" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="240,*" ColumnSpacing="10">
+
+      <!-- Class List -->
+      <Border Grid.Column="0"
+              Background="{DynamicResource SkuaSurfaceBrush}"
+              BorderBrush="{DynamicResource SkuaBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="6">
+        <ListBox ItemsSource="{Binding Entries}"
+                 SelectedItem="{Binding SelectedEntry}"
+                 Classes="embedded">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vms:ClassEnhanceEntry">
+              <Grid ColumnDefinitions="*,Auto" Margin="6,4">
+                <TextBlock Grid.Column="0" Text="{Binding Display}" FontSize="11" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <materialIcons:MaterialIcon Grid.Column="1" Kind="CheckCircle" Width="13" Height="13"
+                                            Foreground="#10B981" IsVisible="{Binding Enabled}"
+                                            ToolTip.Tip="Has a custom profile" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- Profile Editor -->
+      <Border Grid.Column="1"
+              Background="{DynamicResource SkuaSurfaceBrush}"
+              BorderBrush="{DynamicResource SkuaBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="14,12">
+        <StackPanel Spacing="10" DataContext="{Binding SelectedEntry}" x:DataType="vms:ClassEnhanceEntry">
+          <TextBlock Text="{Binding Display}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource SkuaTextBrush}" />
+
+          <CheckBox Content="Use this profile" IsChecked="{Binding Enabled}" />
+
+          <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="8" IsEnabled="{Binding Enabled}">
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Base" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.BaseEnhancements}" SelectedItem="{Binding Base}" Height="28" HorizontalAlignment="Stretch" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Weapon (Forge)" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.WeaponForgeSpecials}" SelectedItem="{Binding WeaponForge}" Height="28" HorizontalAlignment="Stretch" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Weapon (Awe)" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.WeaponAweSpecials}" SelectedItem="{Binding WeaponAwe}" Height="28" HorizontalAlignment="Stretch" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Cape" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.CapeSpecials}" SelectedItem="{Binding Cape}" Height="28" HorizontalAlignment="Stretch" />
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Helm" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.HelmSpecials}" SelectedItem="{Binding Helm}" Height="28" HorizontalAlignment="Stretch" />
+          </Grid>
+
+          <TextBlock TextWrapping="Wrap" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}"
+                     Text="Each slot uses the first option you have unlocked: Forge special, then Awe special (weapon only), then the base enhancement with no special. Classes without a profile use the Default profile, or the built-in Smart Enhance when Default is off." />
+        </StackPanel>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>
