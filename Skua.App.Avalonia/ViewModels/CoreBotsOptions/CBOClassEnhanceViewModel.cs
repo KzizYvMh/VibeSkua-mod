@@ -1,38 +1,54 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
+using Skua.Core.Models;
 using Skua.Core.Models.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Skua.App.Avalonia.ViewModels.CoreBotsOptions;
 
 /// <summary>
-/// Per-class enhancement profiles, saved to the CBO file as "ClassEnh[Class]: Base|WeaponForge|WeaponAwe|Cape|Helm".
-/// CoreAdvanced.SmartEnhance reads them and falls back Forge -> Awe -> base enhancement per slot.
+/// Per-class enhancement profiles. Every class starts with the CoreAdvanced recommendation (ClassEnhancePresets.json);
+/// custom ones are saved to the CBO file as "ClassEnh[class]: Base|WeaponForge|WeaponAwe|Cape|Helm"
+/// and replace the built-in library in CoreAdvanced.SmartEnhance.
 /// </summary>
 public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptions
 {
     private const string KeyPrefix = "ClassEnh[";
     private const string DefaultKey = "*";
 
-    public CBOClassEnhanceViewModel(IScriptInventory inventory, IFileDialogService fileDialog, IDialogService dialogService)
+    public CBOClassEnhanceViewModel(IScriptInventory inventory, IScriptPlayer player, IScriptManager manager, IFileDialogService fileDialog, IDialogService dialogService)
     {
         _inventory = inventory;
+        _player = player;
+        _manager = manager;
         _fileDialog = fileDialog;
         _dialogService = dialogService;
-        Entries.Add(new ClassEnhanceEntry(DefaultKey, "Default (classes without a profile)"));
-        _selectedEntry = Entries[0];
+
+        _entries.Add(new ClassEnhanceEntry(DefaultKey, "Default (classes without a custom profile)", new("Lucky", "None", "None", "None", "None")));
+        using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassEnhancePresets.json");
+        Dictionary<string, ClassEnhanceProfile> presets = stream is null ? new() : JsonSerializer.Deserialize<Dictionary<string, ClassEnhanceProfile>>(stream) ?? new();
+        foreach ((string name, ClassEnhanceProfile preset) in presets)
+            _entries.Add(new ClassEnhanceEntry(name, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name), preset));
+
+        ApplyFilter();
     }
 
     private readonly IScriptInventory _inventory;
+    private readonly IScriptPlayer _player;
+    private readonly IScriptManager _manager;
     private readonly IFileDialogService _fileDialog;
     private readonly IDialogService _dialogService;
+    private readonly List<ClassEnhanceEntry> _entries = new();
 
     public static List<string> BaseEnhancements { get; } = new() { "Lucky", "Fighter", "Thief", "Hybrid", "Wizard", "Healer", "SpellBreaker" };
     public static List<string> WeaponForgeSpecials { get; } = new() { "None", "Forge", "Lacerate", "Smite", "Valiance", "Arcanas_Concerto", "Acheron", "Elysium", "Praxis", "Dauntless", "Ravenous" };
@@ -45,13 +61,66 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
     [ObservableProperty]
     private ClassEnhanceEntry? _selectedEntry;
 
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
+    private bool _onlyOwned;
+
+    partial void OnSearchTextChanged(string value) => ApplyFilter();
+
+    partial void OnOnlyOwnedChanged(bool value) => ApplyFilter();
+
     [RelayCommand]
     private void RefreshInventory()
     {
-        IEnumerable<string> classes = _inventory.Items?.Where(i => i.Category == ItemCategory.Class).Select(i => i.Name) ?? Enumerable.Empty<string>();
-        foreach (string name in classes)
-            GetOrAdd(name);
-        Sort();
+        foreach (InventoryItem item in _inventory.Items?.Where(i => i.Category == ItemCategory.Class) ?? Enumerable.Empty<InventoryItem>())
+        {
+            ClassEnhanceEntry entry = GetOrAdd(item.Name.ToLowerInvariant());
+            entry.Display = item.Name;
+            entry.Owned = true;
+        }
+        ApplyFilter();
+    }
+
+    [RelayCommand]
+    private async Task Enhance()
+    {
+        if (_manager.ScriptRunning)
+        {
+            _dialogService.ShowMessageBox("Stop the running script before enhancing.", "Enhance");
+            return;
+        }
+
+        string? currentClass = _player.CurrentClass?.Name;
+        if (string.IsNullOrEmpty(currentClass))
+        {
+            _dialogService.ShowMessageBox("Login and equip a class first.", "Enhance");
+            return;
+        }
+
+        // Same priority as SmartEnhance: custom profile, then enabled Default, then the class recommendation
+        ClassEnhanceEntry? classEntry = Find(currentClass.ToLowerInvariant());
+        ClassEnhanceEntry entry = classEntry is { Enabled: true } || !_entries[0].Enabled ? classEntry ?? _entries[0] : _entries[0];
+
+        string scriptPath = Path.Combine(ClientFileSources.SkuaScriptsDIR, "ClassEnhanceTemp.cs");
+        File.WriteAllText(scriptPath, $@"//cs_include Scripts/CoreBots.cs
+//cs_include Scripts/CoreFarms.cs
+//cs_include Scripts/CoreAdvanced.cs
+using Skua.Core.Interfaces;
+
+public class ClassEnhanceTemp
+{{
+    public void ScriptMain(IScriptInterface bot)
+    {{
+        string map = bot.Map.FullName;
+        new CoreAdvanced().EnhanceEquippedWithProfile(""{entry.Serialize()}"");
+        if (bot.Map.FullName != map)
+            CoreBots.Instance.Join(map);
+    }}
+}}");
+        _manager.SetLoadedScript(scriptPath);
+        await _manager.StartScript();
     }
 
     [RelayCommand]
@@ -61,7 +130,7 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
         if (string.IsNullOrEmpty(path))
             return;
 
-        Dictionary<string, ClassEnhanceProfile> profiles = Entries.Where(e => e.Enabled).ToDictionary(e => e.Key, e => e.ToProfile());
+        Dictionary<string, ClassEnhanceProfile> profiles = _entries.Where(e => e.Enabled).ToDictionary(e => e.Key, e => e.ToProfile());
         File.WriteAllText(path, JsonSerializer.Serialize(profiles, new JsonSerializerOptions { WriteIndented = true }));
     }
 
@@ -76,8 +145,8 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
         {
             Dictionary<string, ClassEnhanceProfile>? profiles = JsonSerializer.Deserialize<Dictionary<string, ClassEnhanceProfile>>(File.ReadAllText(path));
             foreach ((string key, ClassEnhanceProfile profile) in profiles ?? new())
-                GetOrAdd(key).Apply(profile);
-            Sort();
+                GetOrAdd(key.ToLowerInvariant()).Apply(profile);
+            ApplyFilter();
         }
         catch (Exception ex)
         {
@@ -87,14 +156,14 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
 
     public StringBuilder Save(StringBuilder builder)
     {
-        foreach (ClassEnhanceEntry entry in Entries.Where(e => e.Enabled))
-            builder.AppendLine($"{KeyPrefix}{entry.Key}]: {entry.Base}|{entry.WeaponForge}|{entry.WeaponAwe}|{entry.Cape}|{entry.Helm}");
+        foreach (ClassEnhanceEntry entry in _entries.Where(e => e.Enabled))
+            builder.AppendLine($"{KeyPrefix}{entry.Key}]: {entry.Serialize()}");
         return builder;
     }
 
     public void SetValues(Dictionary<string, string> values)
     {
-        foreach (ClassEnhanceEntry entry in Entries)
+        foreach (ClassEnhanceEntry entry in _entries)
             entry.Enabled = false;
 
         foreach ((string key, string value) in values)
@@ -103,33 +172,35 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
                 continue;
 
             string[] parts = value.Split('|');
-            if (parts.Length != 5)
-                continue;
-
-            GetOrAdd(key[KeyPrefix.Length..^1]).Apply(new ClassEnhanceProfile(parts[0], parts[1], parts[2], parts[3], parts[4]));
+            if (parts.Length == 5)
+                GetOrAdd(key[KeyPrefix.Length..^1]).Apply(new ClassEnhanceProfile(parts[0], parts[1], parts[2], parts[3], parts[4]));
         }
-        Sort();
+        ApplyFilter();
     }
+
+    private ClassEnhanceEntry? Find(string key) => _entries.FirstOrDefault(e => e.Key == key);
 
     private ClassEnhanceEntry GetOrAdd(string key)
     {
-        ClassEnhanceEntry? entry = Entries.FirstOrDefault(e => e.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+        ClassEnhanceEntry? entry = Find(key);
         if (entry is null)
         {
-            entry = new ClassEnhanceEntry(key, key);
-            Entries.Add(entry);
+            entry = new ClassEnhanceEntry(key, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(key), new("Lucky", "None", "None", "None", "None"));
+            _entries.Add(entry);
         }
         return entry;
     }
 
-    private void Sort()
+    private void ApplyFilter()
     {
-        List<ClassEnhanceEntry> sorted = Entries.OrderBy(e => e.Key != DefaultKey).ThenBy(e => e.Display, StringComparer.OrdinalIgnoreCase).ToList();
         ClassEnhanceEntry? selected = SelectedEntry;
         Entries.Clear();
-        foreach (ClassEnhanceEntry entry in sorted)
+        foreach (ClassEnhanceEntry entry in _entries
+            .Where(e => e.Key == DefaultKey || ((!OnlyOwned || e.Owned) && e.Display.Contains(SearchText, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(e => e.Key != DefaultKey)
+            .ThenBy(e => e.Display, StringComparer.OrdinalIgnoreCase))
             Entries.Add(entry);
-        SelectedEntry = selected ?? Entries[0];
+        SelectedEntry = selected is not null && Entries.Contains(selected) ? selected : Entries[0];
     }
 }
 
@@ -137,14 +208,24 @@ public record ClassEnhanceProfile(string Base, string WeaponForge, string Weapon
 
 public partial class ClassEnhanceEntry : ObservableObject
 {
-    public ClassEnhanceEntry(string key, string display)
+    public ClassEnhanceEntry(string key, string display, ClassEnhanceProfile preset)
     {
         Key = key;
-        Display = display;
+        _display = display;
+        _preset = preset;
+        Load(preset);
     }
 
+    private readonly ClassEnhanceProfile _preset;
+    private bool _loading;
+
     public string Key { get; }
-    public string Display { get; }
+
+    [ObservableProperty]
+    private string _display;
+
+    [ObservableProperty]
+    private bool _owned;
 
     [ObservableProperty]
     private bool _enabled;
@@ -164,15 +245,49 @@ public partial class ClassEnhanceEntry : ObservableObject
     [ObservableProperty]
     private string _helm = "None";
 
+    // Unchecking a custom profile goes back to the recommended one; editing any slot makes it custom.
+    partial void OnEnabledChanged(bool value)
+    {
+        if (!value)
+            Load(_preset);
+    }
+
+    partial void OnBaseChanged(string value) => MarkCustom();
+
+    partial void OnWeaponForgeChanged(string value) => MarkCustom();
+
+    partial void OnWeaponAweChanged(string value) => MarkCustom();
+
+    partial void OnCapeChanged(string value) => MarkCustom();
+
+    partial void OnHelmChanged(string value) => MarkCustom();
+
+    private void MarkCustom()
+    {
+        if (!_loading)
+            Enabled = true;
+    }
+
     public ClassEnhanceProfile ToProfile() => new(Base, WeaponForge, WeaponAwe, Cape, Helm);
+
+    public string Serialize() => $"{Base}|{WeaponForge}|{WeaponAwe}|{Cape}|{Helm}";
 
     public void Apply(ClassEnhanceProfile profile)
     {
-        Base = CBOClassEnhanceViewModel.BaseEnhancements.Contains(profile.Base) ? profile.Base : "Lucky";
-        WeaponForge = CBOClassEnhanceViewModel.WeaponForgeSpecials.Contains(profile.WeaponForge) ? profile.WeaponForge : "None";
-        WeaponAwe = CBOClassEnhanceViewModel.WeaponAweSpecials.Contains(profile.WeaponAwe) ? profile.WeaponAwe : "None";
-        Cape = CBOClassEnhanceViewModel.CapeSpecials.Contains(profile.Cape) ? profile.Cape : "None";
-        Helm = CBOClassEnhanceViewModel.HelmSpecials.Contains(profile.Helm) ? profile.Helm : "None";
+        Load(profile);
         Enabled = true;
+    }
+
+    private void Load(ClassEnhanceProfile profile)
+    {
+        _loading = true;
+        Base = Pick(CBOClassEnhanceViewModel.BaseEnhancements, profile.Base, "Lucky");
+        WeaponForge = Pick(CBOClassEnhanceViewModel.WeaponForgeSpecials, profile.WeaponForge, "None");
+        WeaponAwe = Pick(CBOClassEnhanceViewModel.WeaponAweSpecials, profile.WeaponAwe, "None");
+        Cape = Pick(CBOClassEnhanceViewModel.CapeSpecials, profile.Cape, "None");
+        Helm = Pick(CBOClassEnhanceViewModel.HelmSpecials, profile.Helm, "None");
+        _loading = false;
+
+        static string Pick(List<string> options, string value, string fallback) => options.Contains(value) ? value : fallback;
     }
 }

@@ -53,6 +53,7 @@
         <Content Include="QuestData.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <EmbeddedResource Include="ClassEnhancePresets.json" LogicalName="ClassEnhancePresets.json" />
         <Content Include="AdvancedSkills.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

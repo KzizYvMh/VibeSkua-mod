@@ -1,0 +1,1920 @@
+{
+ "Draconic Chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Smite",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "Hollowborn Vindicator Member Preview": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "Phantom Chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "abyssal angel": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "abyssal angel's shadow": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "acolyte": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "alpha doommega": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "alpha omega": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "alpha pirate": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "antique hunter": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "arachnomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Penitence",
+  "Helm": "Vim"
+ },
+ "arcana invoker": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "arcane dark caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "archfiend": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "archivist of time": {
+  "Base": "Wizard",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "archmage": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "archpaladin": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Penitence",
+  "Helm": "Forge"
+ },
+ "artifact hunter": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "barber": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "bard": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "battlemage": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "battlemage of love": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "beast warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "beastmaster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "berserker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "beta berserker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "blademaster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "blademaster assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "blaze binder": {
+  "Base": "Wizard",
+  "WeaponForge": "Acheron",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "blood ancient": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "blood sorceress": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "blood titan": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "cardclasher": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chaos avenger": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "chaos avenger member preview": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chaos champion prime": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chaos shaper": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chaos slayer": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "chaos slayer berserker": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "chaos slayer cleric": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "chaos slayer mystic": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "chaos slayer thief": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "chrono assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chrono chaorruptor": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "chrono commandant": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chrono dataknight": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "chrono dragonknight": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "chrono shadowhunter": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Lament",
+  "Helm": "Vim"
+ },
+ "chrono shadowslayer": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "None",
+  "Cape": "Lament",
+  "Helm": "Vim"
+ },
+ "chronocommander": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chronocorrupter": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chronomancer prime": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "chunin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic alpha pirate": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic barber": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic defender": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic doomknight": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic dragonlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic exalted soul cleaver": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic guardian": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic legion doomknight": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic mage": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic ninja": {
+  "Base": "Thief",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic paladin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic pirate": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic rogue": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "classic soul cleaver": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "clawsuit": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "continuum chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "corrupted chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "cryomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "cryomancer mini pet coming soon": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "daimon": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark battlemage": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark chaos berserker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark cryomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark glaceran warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "dark harbinger": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark legendary hero": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dark lord": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "dark master of moglins": {
+  "Base": "Wizard",
+  "WeaponForge": "Acheron",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Penitence",
+  "Helm": "Pneuma"
+ },
+ "dark metal necro": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "dark ultra omninight": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "darkblood stormking": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "darklord": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "None",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "darkside": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "deathknight": {
+  "Base": "Fighter",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "deathknight lord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "debris highlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "defender": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "doom metal necro": {
+  "Base": "Lucky",
+  "WeaponForge": "Lacerate",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Forge"
+ },
+ "doomknight": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "doomknight overlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dragon knight": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dragon of time": {
+  "Base": "Healer",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "dragon shinobi": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dragonlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "dragonslayer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "dragonslayer general": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "dragonsoul shinobi": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "drakel warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "elemental dracomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "empyrean chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "enchanted vampire lord": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "enforcer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "eternal chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "eternal inversionist": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "evolved clawsuit": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "evolved dark caster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "evolved leprechaun": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "evolved pumpkin lord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "evolved shaman": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "exalted harbinger": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "exalted soul cleaver": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "firelord summoner": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "flame dragon warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Anima"
+ },
+ "frost spiritreaver": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "frostblood titan": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "frostval barbarian": {
+  "Base": "Fighter",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Absolution",
+  "Helm": "Anima"
+ },
+ "glaceran warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "glacial berserker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "glacial berserker test": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "glacial warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "great thief": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Lament",
+  "Helm": "Vim"
+ },
+ "grim necromancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "grunge rocker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "guardian": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "healer": {
+  "Base": "Healer",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "None",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "healer (rare)": {
+  "Base": "Healer",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "None",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "heavy metal necro": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "heavy metal rockstar": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "heroic naval commander": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "highseas commander": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "hobo highlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "hollowborn vindicator": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "hollowborn vindicator member preview": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "horc evader": {
+  "Base": "Thief",
+  "WeaponForge": "Lacerate",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "immortal chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "immortal dark caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "imperial chunin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "infinite dark caster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "infinite legion dark caster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "infinity knight": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "infinity titan": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "interstellar knight": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "king's echo": {
+  "Base": "Healer",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "None",
+  "Cape": "Lament",
+  "Helm": "Examen"
+ },
+ "king\\u0027s echo": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legendary elemental warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "legendary hero": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Absolution",
+  "Helm": "Forge"
+ },
+ "legendary naval commander": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion blademaster assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion doomknight": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "None"
+ },
+ "legion doomknight tester": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion evolved dark caster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion paladin": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion revenant": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "legion revenant (ioda)": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "legion revenant member test": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "legion swordmaster assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "leprechaun": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "lich": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Examen"
+ },
+ "lightcaster": {
+  "Base": "Wizard",
+  "WeaponForge": "Praxis",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Lament",
+  "Helm": "Pneuma"
+ },
+ "lightcaster test": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "lightmage": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "lord of order": {
+  "Base": "Lucky",
+  "WeaponForge": "Arcanas_Concerto",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Penitence",
+  "Helm": "Forge"
+ },
+ "love caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "lycan": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mage": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mage (rare)": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "martial artist": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "master martial artist": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "master of moglins": {
+  "Base": "Wizard",
+  "WeaponForge": "Acheron",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Penitence",
+  "Helm": "Pneuma"
+ },
+ "master ranger": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mechajouster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mindbreaker": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mystical dark caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "mythic elemental warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "naval commander": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "nechronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "necromancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "necrotic chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "neo metal necro": {
+  "Base": "Lucky",
+  "WeaponForge": "Lacerate",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Forge"
+ },
+ "ninja": {
+  "Base": "Thief",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "ninja (rare)": {
+  "Base": "Thief",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "ninja warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "no class": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "northlands monk": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "not a mod": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "nu metal necro": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "obsidian no class": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "obsidian paladin chronomancer": {
+  "Base": "Healer",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "oracle": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "overworld chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "paladin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "paladin chronomancer": {
+  "Base": "Healer",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "paladin high lord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "paladinslayer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "phantasm chronomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Examen"
+ },
+ "phantom chronomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Examen"
+ },
+ "pink romancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "pinkomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "pirate": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "prismatic clawsuit": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "protosartorium": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "psionic mindbreaker": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "pumpkin lord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "pyromancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "quantum chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "ranger": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "renegade": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "rogue": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "rogue (rare)": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "royal battlemage": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Lament",
+  "Helm": "Pneuma"
+ },
+ "royal vampire lord": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "rustbucket": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "sakura cryomancer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "savage glaceran warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "scarlet sorceress": {
+  "Base": "Wizard",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Lament",
+  "Helm": "Pneuma"
+ },
+ "scion of flames": {
+  "Base": "Wizard",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "sentinel": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadow dragon shinobi": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadow ripper": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadow rocker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadowflame dragonlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadowscythe general": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "shadowstalker of time": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "shadowwalker of time": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "shadowweaver of time": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ },
+ "shaman": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "silver paladin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "skycharged grenadier": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "skyguard grenadier": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "sorcerer": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "soul cleaver": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "sovereign of storms": {
+  "Base": "Wizard",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Pneuma"
+ },
+ "star captain": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "starlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "stonecrusher": {
+  "Base": "Fighter",
+  "WeaponForge": "Valiance",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "Absolution",
+  "Helm": "Anima"
+ },
+ "swordmaster": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "swordmaster assassin": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "the collector": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "thief of hours": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "timekeeper": {
+  "Base": "Lucky",
+  "WeaponForge": "Lacerate",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Lament",
+  "Helm": "Vim"
+ },
+ "timekiller": {
+  "Base": "Lucky",
+  "WeaponForge": "Lacerate",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Lament",
+  "Helm": "Vim"
+ },
+ "timeless chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "timeless dark caster": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "troll spellsmith": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "troubador of love": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "ultra elemental warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "ultra omniknight": {
+  "Base": "Lucky",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "unchained rocker": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "unchained rockstar": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "undead goat": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "undead leperchaun": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "undeadslayer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "underworld chronomancer": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Forge",
+  "Helm": "None"
+ },
+ "unlucky leperchaun": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "unundead goat": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "vampire": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "vampire lord": {
+  "Base": "Wizard",
+  "WeaponForge": "Elysium",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "Avarice",
+  "Helm": "Pneuma"
+ },
+ "verus doomknight": {
+  "Base": "Lucky",
+  "WeaponForge": "Dauntless",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "vindicator of they": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Health_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "void highlord": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "void highlord (ioda)": {
+  "Base": "Lucky",
+  "WeaponForge": "Ravenous",
+  "WeaponAwe": "Spiral_Carve",
+  "Cape": "Vainglory",
+  "Helm": "Anima"
+ },
+ "void highlord tester": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "warlord": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "warrior": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "warrior (rare)": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "warriorscythe general": {
+  "Base": "Lucky",
+  "WeaponForge": "None",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "witch": {
+  "Base": "Wizard",
+  "WeaponForge": "None",
+  "WeaponAwe": "Awe_Blast",
+  "Cape": "None",
+  "Helm": "None"
+ },
+ "yami no ronin": {
+  "Base": "Lucky",
+  "WeaponForge": "Praxis",
+  "WeaponAwe": "Mana_Vamp",
+  "Cape": "Vainglory",
+  "Helm": "Vim"
+ }
+}

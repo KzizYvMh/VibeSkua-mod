@@ -24,19 +24,25 @@
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
-          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ImportCommand}" ToolTip.Tip="Import profiles from a JSON file">
+          <Button Classes="skua-button skua-primary" Height="28" Padding="10,0" Command="{Binding EnhanceCommand}" ToolTip.Tip="Enhance the equipped items using the profile of the current class">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+              <materialIcons:MaterialIcon Kind="AutoFix" Width="13" Height="13" />
+              <TextBlock Text="Enhance" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ImportCommand}" ToolTip.Tip="Import custom profiles from a JSON file">
             <StackPanel Orientation="Horizontal" Spacing="5">
               <materialIcons:MaterialIcon Kind="FileImportOutline" Width="13" Height="13" />
               <TextBlock Text="Import" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
-          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ExportCommand}" ToolTip.Tip="Export enabled profiles to a JSON file">
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding ExportCommand}" ToolTip.Tip="Export custom profiles to a JSON file">
             <StackPanel Orientation="Horizontal" Spacing="5">
               <materialIcons:MaterialIcon Kind="FileExportOutline" Width="13" Height="13" />
               <TextBlock Text="Export" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
-          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding RefreshInventoryCommand}" ToolTip.Tip="Refresh classes from player inventory">
+          <Button Classes="skua-button" Height="28" Padding="10,0" Command="{Binding RefreshInventoryCommand}" ToolTip.Tip="Refresh owned classes from player inventory">
             <StackPanel Orientation="Horizontal" Spacing="5">
               <materialIcons:MaterialIcon Kind="Refresh" Width="13" Height="13" />
               <TextBlock Text="Refresh Inventory" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -46,7 +52,7 @@
       </Grid>
     </Border>
 
-    <Grid Grid.Row="1" ColumnDefinitions="240,*" ColumnSpacing="10">
+    <Grid Grid.Row="1" ColumnDefinitions="260,*" ColumnSpacing="10">
 
       <!-- Class List -->
       <Border Grid.Column="0"
@@ -55,20 +61,28 @@
               BorderThickness="1"
               CornerRadius="8"
               Padding="6">
-        <ListBox ItemsSource="{Binding Entries}"
-                 SelectedItem="{Binding SelectedEntry}"
-                 Classes="embedded">
-          <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="vms:ClassEnhanceEntry">
-              <Grid ColumnDefinitions="*,Auto" Margin="6,4">
-                <TextBlock Grid.Column="0" Text="{Binding Display}" FontSize="11" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
-                <materialIcons:MaterialIcon Grid.Column="1" Kind="CheckCircle" Width="13" Height="13"
-                                            Foreground="#10B981" IsVisible="{Binding Enabled}"
-                                            ToolTip.Tip="Has a custom profile" />
-              </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="6">
+          <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Search class..." Height="28" />
+          <CheckBox Grid.Row="1" Content="Only owned classes" IsChecked="{Binding OnlyOwned}" FontSize="11" />
+          <ListBox Grid.Row="2"
+                   ItemsSource="{Binding Entries}"
+                   SelectedItem="{Binding SelectedEntry}"
+                   Classes="embedded">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vms:ClassEnhanceEntry">
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="6,4">
+                  <TextBlock Grid.Column="0" Text="{Binding Display}" FontSize="11" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                  <materialIcons:MaterialIcon Grid.Column="1" Kind="BagPersonal" Width="12" Height="12"
+                                              Foreground="{DynamicResource SkuaMutedTextBrush}" IsVisible="{Binding Owned}"
+                                              ToolTip.Tip="In your inventory" />
+                  <materialIcons:MaterialIcon Grid.Column="2" Kind="CheckCircle" Width="13" Height="13"
+                                              Foreground="#10B981" IsVisible="{Binding Enabled}"
+                                              ToolTip.Tip="Custom profile" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
       </Border>
 
       <!-- Profile Editor -->
@@ -81,9 +95,10 @@
         <StackPanel Spacing="10" DataContext="{Binding SelectedEntry}" x:DataType="vms:ClassEnhanceEntry">
           <TextBlock Text="{Binding Display}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource SkuaTextBrush}" />
 
-          <CheckBox Content="Use this profile" IsChecked="{Binding Enabled}" />
+          <CheckBox Content="Use custom profile" IsChecked="{Binding Enabled}"
+                    ToolTip.Tip="Checked: only your selection is used. Unchecked: the recommended enhancements are used." />
 
-          <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="8" IsEnabled="{Binding Enabled}">
+          <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="8">
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Base" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}" VerticalAlignment="Center" />
             <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{x:Static vms:CBOClassEnhanceViewModel.BaseEnhancements}" SelectedItem="{Binding Base}" Height="28" HorizontalAlignment="Stretch" />
 
@@ -101,7 +116,7 @@
           </Grid>
 
           <TextBlock TextWrapping="Wrap" FontSize="10" Foreground="{DynamicResource SkuaMutedTextBrush}"
-                     Text="Each slot uses the first option you have unlocked: Forge special, then Awe special (weapon only), then the base enhancement with no special. Classes without a profile use the Default profile, or the built-in Smart Enhance when Default is off." />
+                     Text="Values start as the recommended setup. Changing any slot makes it a custom profile, and then only your selection is used: the weapon takes the Forge special if unlocked, else the Awe one; any special you don't have unlocked becomes the base enhancement only. Uncheck to go back to the recommendation. The Default profile, when checked, applies to every class without a custom profile." />
         </StackPanel>
       </Border>
     </Grid>
