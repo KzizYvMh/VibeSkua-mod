@@ -286,6 +286,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         int lastConnChange = 0;
         string lastConnDetail = "";
         bool wasPlaying = false;
+        int disconnectedSince = 0;
 
         Stopwatch sw = new();
 
@@ -299,6 +300,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 if (currentPlaying)
                 {
                     wasPlaying = true;
+                    disconnectedSince = 0;
                     Servers.LastIP = Player.ServerIP ?? Servers.LastIP;
 
                     if (Options.RestPackets && !Player.InCombat)
@@ -312,18 +314,23 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
 
                     _limit.LimitedRun("opts", 250, CheckOptions);
                 }
-                else
+                else if (wasPlaying && !Servers.IsConnected && !_waitForLogin && !Servers.IsIntentionalLogout)
                 {
-                    if (wasPlaying && !Servers.IsConnected && !_waitForLogin && !Servers.IsIntentionalLogout)
+                    // A busy Flash makes reads fail and return false; only act if the disconnect persists.
+                    if (disconnectedSince == 0)
+                        disconnectedSince = Environment.TickCount;
+                    else if (Environment.TickCount - disconnectedSince >= 10000)
                     {
                         wasPlaying = false;
+                        disconnectedSince = 0;
                         Log("Unexpected disconnection detected. Triggering auto re-login.");
                         BeginLogout();
                     }
-                    else if (!currentPlaying)
-                    {
-                        wasPlaying = false;
-                    }
+                }
+                else
+                {
+                    wasPlaying = false;
+                    disconnectedSince = 0;
                 }
 
                 _limit.LimitedRun("kicked", 1000, () =>
