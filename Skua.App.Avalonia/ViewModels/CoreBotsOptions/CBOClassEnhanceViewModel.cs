@@ -6,6 +6,7 @@ using Skua.Core.Models.Items;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,11 +35,11 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
         _fileDialog = fileDialog;
         _dialogService = dialogService;
 
-        _entries.Add(new ClassEnhanceEntry(DefaultKey, "Default (classes without a custom profile)", new("Lucky", "None", "None", "None", "None")));
+        AddEntry(new ClassEnhanceEntry(DefaultKey, "Default (classes without a custom profile)", new("Lucky", "None", "None", "None", "None")));
         using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassEnhancePresets.json");
         Dictionary<string, ClassEnhanceProfile> presets = stream is null ? new() : JsonSerializer.Deserialize<Dictionary<string, ClassEnhanceProfile>>(stream) ?? new();
         foreach ((string name, ClassEnhanceProfile preset) in presets)
-            _entries.Add(new ClassEnhanceEntry(name, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name), preset));
+            AddEntry(new ClassEnhanceEntry(name, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name), preset));
 
         ApplyFilter();
     }
@@ -186,9 +187,25 @@ public class ClassEnhanceTemp
         if (entry is null)
         {
             entry = new ClassEnhanceEntry(key, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(key), new("Lucky", "None", "None", "None", "None"));
-            _entries.Add(entry);
+            AddEntry(entry);
         }
         return entry;
+    }
+
+    private void AddEntry(ClassEnhanceEntry entry)
+    {
+        entry.PropertyChanged += OnEntryChanged;
+        _entries.Add(entry);
+    }
+
+    // Only one profile can be active: enabling one disables the others
+    private void OnEntryChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(ClassEnhanceEntry.Enabled) || sender is not ClassEnhanceEntry { Enabled: true } enabled)
+            return;
+
+        foreach (ClassEnhanceEntry entry in _entries.Where(x => x != enabled && x.Enabled))
+            entry.Enabled = false;
     }
 
     private void ApplyFilter()
