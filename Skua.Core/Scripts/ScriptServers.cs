@@ -75,7 +75,8 @@ public partial class ScriptServers : ObservableRecipient, IScriptServers
     private void _logout()
     {
         IsIntentionalLogout = true;
-        CommunityToolkit.Mvvm.Messaging.StrongReferenceMessenger.Default.Send<Skua.Core.Messaging.LogoutRequestedMessage, int>(new(), (int)Skua.Core.Messaging.MessageChannels.GameEvents);
+        if (!_reloginLogout)
+            CommunityToolkit.Mvvm.Messaging.StrongReferenceMessenger.Default.Send<Skua.Core.Messaging.LogoutRequestedMessage, int>(new(), (int)Skua.Core.Messaging.MessageChannels.GameEvents);
         if (IsConnected)
             Flash.CallGameFunction("sfc.disconnect");
         Flash.CallGameFunction("gotoAndPlay", "Login");
@@ -537,6 +538,22 @@ public partial class ScriptServers : ObservableRecipient, IScriptServers
         return success;
     }
 
+    // Set while auto relogin logs out between attempts: the LogoutRequestedMessage would cancel the relogin itself
+    private bool _reloginLogout;
+
+    private void LogoutForRelogin()
+    {
+        _reloginLogout = true;
+        try
+        {
+            Logout();
+        }
+        finally
+        {
+            _reloginLogout = false;
+        }
+    }
+
     private async Task<bool> EnsureLogin(Server server, CancellationToken token)
     {
         int tries = 0;
@@ -564,7 +581,7 @@ public partial class ScriptServers : ObservableRecipient, IScriptServers
 
                 if (IsConnected || tries > 1)
                 {
-                    Logout();
+                    LogoutForRelogin();
                     await Task.Delay(2000, token);
                 }
 

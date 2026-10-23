@@ -392,9 +392,13 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
     private (int newTime, string newText) CheckStuckonLoading(int lastConnChange, string lastConnDetail)
     {
         string connDetail = Flash.IsNull("mcConnDetail.stage") ? "null" : Flash.GetGameObject("mcConnDetail.txtDetail.text", "null")!;
+        // After a relogin the overlay can stay on stage with its last text while the player is fully in game;
+        // acting on it would log a healthy account out (without re-login) once LoadTimeout passes.
+        if (connDetail != "null" && Servers.IsConnected && Flash.IsWorldLoaded && !Map.Loading && Player.Loaded)
+            connDetail = "null";
         if (connDetail == "null")
             return (Environment.TickCount, connDetail);
-        if (connDetail.Contains("has been lost") && !_waitForLogin)
+        if (connDetail.Contains("has been lost") && !_waitForLogin && !Servers.IsConnected)
         {
             if (!Servers.IsIntentionalLogout)
             {
@@ -773,6 +777,8 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
     private void Relogin(int delay, bool startScript)
     {
         Servers.Logout();
+        // Logout() sends LogoutRequestedMessage, whose CancelRelogin() clears the flag OnLogout just set
+        _waitForLogin = true;
         Log($"Waiting {delay}ms for re-login.");
         CancellationTokenSource reloginCts = new();
         _reloginCTS = reloginCts;
