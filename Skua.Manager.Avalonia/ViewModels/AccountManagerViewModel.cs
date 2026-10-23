@@ -194,7 +194,11 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
     // Script and Server Properties
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ScriptName))]
     private string _scriptPath = string.Empty;
+
+    // The full path is long and mostly the same folder; the view shows the script name and keeps the path in the tooltip
+    public string ScriptName => string.IsNullOrEmpty(ScriptPath) ? "No script selected" : System.IO.Path.GetFileNameWithoutExtension(ScriptPath);
 
     partial void OnScriptPathChanged(string value)
     {
@@ -1115,6 +1119,31 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
         if (!string.IsNullOrEmpty(folderPath))
             ScriptPath = folderPath;
+    }
+
+    // Options are fields of the compiled script, so the client compiles it and shows its options dialog
+    [RelayCommand]
+    public void ConfigureScript()
+    {
+        if (string.IsNullOrEmpty(ScriptPath) || !File.Exists(ScriptPath))
+        {
+            _dialogService.ShowMessageBox("Select a script first.", "Script Options");
+            return;
+        }
+
+        try
+        {
+            ProcessStartInfo psi = new(_exePath)
+            {
+                ArgumentList = { "--configure-script", ScriptPath },
+                WorkingDirectory = SkuaExecutableLocator.WorkingDirectory
+            };
+            Process.Start(psi);
+        }
+        catch (Exception ex)
+        {
+            _dialogService.ShowMessageBox($"Could not open the script options: {ex.Message}", "Script Options");
+        }
     }
 
     [RelayCommand]

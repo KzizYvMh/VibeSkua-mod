@@ -16,7 +16,7 @@ namespace Skua.App.Avalonia.ViewModels.CoreBotsOptions;
 public partial class CoreBotsViewModel : BotControlViewModelBase
 {
     public CoreBotsViewModel(List<TabItemViewModel> tabs, IScriptPlayer player, IDialogService dialogService)
-        : base("CoreBots Options")
+        : base("CoreBots Options", 800, 650)
     {
         CoreBotsTabs = tabs;
         _selectedTab = CoreBotsTabs[0];

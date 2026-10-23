@@ -159,6 +159,18 @@ public partial class App : Application
         ApplyThemeFromService(themeService);
 
         string[] args = Environment.GetCommandLineArgs();
+
+        // The Manager opens a script's options without starting a launcher or a game client
+        int configureIndex = Array.IndexOf(args, ConfigureScriptArg);
+        if (configureIndex >= 0 && configureIndex + 1 < args.Length && ApplicationLifetime is IClassicDesktopStyleApplicationLifetime configureDesktop)
+        {
+            configureDesktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            string scriptPath = args[configureIndex + 1];
+            Dispatcher.UIThread.Post(() => ConfigureScriptAndExit(configureDesktop, scriptPath));
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         bool hasEmbedFlag = false;
         long embedHwnd = 0;
         int hostPid = 0;
@@ -302,6 +314,44 @@ public partial class App : Application
 
         Task.Run(() => TryInitializeStartupServices());
         base.OnFrameworkInitializationCompleted();
+    }
+
+    public const string ConfigureScriptArg = "--configure-script";
+
+    // Compiles the script only to read its Options fields, shows the same Script Options dialog the bot uses
+    // (saved to options\<OptionsStorage>.cfg) and exits.
+    private static async void ConfigureScriptAndExit(IClassicDesktopStyleApplicationLifetime desktop, string scriptPath)
+    {
+        IDialogService dialogService = Ioc.Default.GetRequiredService<IDialogService>();
+        try
+        {
+            if (!System.IO.File.Exists(scriptPath))
+            {
+                dialogService.ShowMessageBox($"Script not found:\n{scriptPath}", "Script Options");
+                return;
+            }
+
+            IScriptManager manager = Ioc.Default.GetRequiredService<IScriptManager>();
+            manager.SetLoadedScript(scriptPath);
+            await Task.Run(Skua.Core.Scripts.CoreAdvancedPatcher.EnsurePatched);
+            string source = await System.IO.File.ReadAllTextAsync(scriptPath);
+            object? script = await Task.Run(() => manager.Compile(source));
+            manager.LoadScriptConfig(script);
+
+            IScriptOptionContainer? config = manager.Config;
+            if (config is null || (config.Options.Count == 0 && config.MultipleOptions.Count == 0))
+                dialogService.ShowMessageBox($"{System.IO.Path.GetFileNameWithoutExtension(scriptPath)} has no options to configure.", "Script Options");
+            else
+                config.Configure();
+        }
+        catch (Exception ex)
+        {
+            dialogService.ShowMessageBox($"Could not load the script options:\n\n{ex.Message}", "Script Options");
+        }
+        finally
+        {
+            desktop.Shutdown();
+        }
     }
 
     private static void RegisterGlobalExceptionHandlers()
