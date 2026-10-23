@@ -127,6 +127,7 @@ public partial class App : Application
         services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IWindowService, WindowService>();
+        services.AddSingleton<IClassEnhanceProfiles, ClassEnhanceProfiles>();
         services.AddSingleton<IFileDialogService, FileDialogService>();
         services.AddSingleton<IThemeService, AvaloniaThemeService>();
         services.AddSingleton(HotKeys.CreateHotKeys);

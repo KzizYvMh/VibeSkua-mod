@@ -6,7 +6,6 @@ using Skua.Shared.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -82,7 +81,7 @@ public partial class CoreBotsViewModel : BotControlViewModelBase
         try
         {
             Profiles.Clear();
-            foreach (string name in GetConnectedAccounts())
+            foreach (string name in ConnectedAccounts.Get(_player.Username))
                 Profiles.Add(name);
             // A profile chosen earlier stays selectable even if its tab was closed meanwhile
             if (!string.IsNullOrEmpty(selected) && !Profiles.Contains(selected, StringComparer.OrdinalIgnoreCase))
@@ -97,48 +96,21 @@ public partial class CoreBotsViewModel : BotControlViewModelBase
         }
     }
 
-    // Each tab writes its logged in username to %TEMP%\SkuaZZTabs\{pid}.txt (MainWindow)
-    private List<string> GetConnectedAccounts()
+    /// <summary>
+    /// Opens the Class Enhance tab on <paramref name="className"/> of <paramref name="profile"/> (Loadouts Manager).
+    /// </summary>
+    public void EditClassEnhance(string profile, string className)
     {
-        List<string> others = new();
-        string dir = Path.Combine(Path.GetTempPath(), "SkuaZZTabs");
-        if (Directory.Exists(dir))
+        if (!profile.Equals(ProfileName, StringComparison.OrdinalIgnoreCase))
         {
-            foreach (string file in Directory.GetFiles(dir, "*.txt"))
-            {
-                if (!int.TryParse(Path.GetFileNameWithoutExtension(file), out int pid) || pid == Environment.ProcessId || !IsProcessAlive(pid))
-                    continue;
-                try
-                {
-                    string name = File.ReadAllText(file).Trim();
-                    if (!string.IsNullOrEmpty(name))
-                        others.Add(name);
-                }
-                catch { }
-            }
+            if (!string.IsNullOrEmpty(ProfileName))
+                SaveInternal(showDialog: false);
+            SetProfileSilently(profile);
+            LoadProfile(profile, resetIfMissing: true);
         }
 
-        List<string> accounts = new();
-        if (!string.IsNullOrEmpty(_player.Username))
-            accounts.Add(_player.Username);
-        accounts.AddRange(others
-            .Where(n => !accounts.Contains(n, StringComparer.OrdinalIgnoreCase))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(n => n, StringComparer.OrdinalIgnoreCase));
-        return accounts;
-    }
-
-    private static bool IsProcessAlive(int pid)
-    {
-        try
-        {
-            using Process process = Process.GetProcessById(pid);
-            return !process.HasExited;
-        }
-        catch
-        {
-            return false;
-        }
+        SelectedTab = CoreBotsTabs.First(t => t.Content is CBOClassEnhanceViewModel);
+        ((CBOClassEnhanceViewModel)SelectedTab.Content).SelectClass(className);
     }
 
     [RelayCommand]
@@ -199,6 +171,15 @@ public partial class CoreBotsViewModel : BotControlViewModelBase
     {
         CurrentPlayer = profile;
 
+        Dictionary<string, string>? values = ReadProfile(profile);
+        // Don't show the previous account's values under a profile that has no file yet
+        if (values != null || resetIfMissing)
+            SetValues(values ?? new());
+    }
+
+    /// <returns>The saved options of <paramref name="profile"/>, or null if it has no CBO file.</returns>
+    public static Dictionary<string, string>? ReadProfile(string profile)
+    {
         string filePath = Path.Combine(ClientFileSources.SkuaOptionsDIR, $"CBO_Storage({profile}).txt");
         if (!File.Exists(filePath) && Directory.Exists(ClientFileSources.LegacySkuaDIR))
         {
@@ -208,20 +189,10 @@ public partial class CoreBotsViewModel : BotControlViewModelBase
         }
 
         if (!File.Exists(filePath))
-        {
-            // Don't show the previous account's values under a profile that has no file yet
-            if (resetIfMissing)
-                SetValues(new());
-            return;
-        }
+            return null;
 
-        SetValues(ReadValues(File.ReadAllLines(filePath)));
-    }
-
-    private Dictionary<string, string> ReadValues(IEnumerable<string> lines)
-    {
         Dictionary<string, string> optionsDict = new();
-        foreach (string option in lines)
+        foreach (string option in File.ReadAllLines(filePath))
         {
             ReadOnlySpan<string> value = option.Split(_separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (value.Length == 2)
@@ -239,7 +210,7 @@ public partial class CoreBotsViewModel : BotControlViewModelBase
         }
     }
 
-    private readonly char _separator = ':';
+    private const char _separator = ':';
 }
 
 internal interface IManageCBOptions

@@ -36,12 +36,40 @@ public partial class CBOClassEnhanceViewModel : ObservableObject, IManageCBOptio
         _fileDialog = fileDialog;
         _dialogService = dialogService;
 
-        AddEntry(new ClassEnhanceEntry(DefaultKey, "Default (classes without a custom profile)", new("Lucky", "None", "None", "None", "None")));
-        using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassEnhancePresets.json");
-        Dictionary<string, ClassEnhanceProfile> presets = stream is null ? new() : JsonSerializer.Deserialize<Dictionary<string, ClassEnhanceProfile>>(stream) ?? new();
-        foreach ((string name, ClassEnhanceProfile preset) in presets)
+        AddEntry(new ClassEnhanceEntry(DefaultKey, "Default (classes without a custom profile)", DefaultProfile));
+        foreach ((string name, ClassEnhanceProfile preset) in Presets)
             AddEntry(new ClassEnhanceEntry(name, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name), preset));
 
+        ApplyFilter();
+    }
+
+    private static readonly ClassEnhanceProfile DefaultProfile = new("Lucky", "None", "None", "None", "None");
+
+    private static readonly Dictionary<string, ClassEnhanceProfile> Presets = LoadPresets();
+
+    private static Dictionary<string, ClassEnhanceProfile> LoadPresets()
+    {
+        using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ClassEnhancePresets.json");
+        return stream is null ? new() : JsonSerializer.Deserialize<Dictionary<string, ClassEnhanceProfile>>(stream) ?? new();
+    }
+
+    /// <summary>
+    /// The saved profile <see cref="Enhance"/> would use for <paramref name="className"/>: custom profile, then enabled Default, then the class recommendation.
+    /// </summary>
+    public static string Resolve(Dictionary<string, string>? values, string className)
+    {
+        string key = className.ToLowerInvariant();
+        return Custom(key) ?? Custom(DefaultKey) ?? Serialize(Presets.GetValueOrDefault(key, DefaultProfile));
+
+        string? Custom(string k) => values != null && values.TryGetValue($"{KeyPrefix}{k}]", out string? v) && v.Split('|').Length == 5 ? v : null;
+        static string Serialize(ClassEnhanceProfile p) => $"{p.Base}|{p.WeaponForge}|{p.WeaponAwe}|{p.Cape}|{p.Helm}";
+    }
+
+    public void SelectClass(string className)
+    {
+        SearchText = string.Empty;
+        OnlyOwned = false;
+        SelectedEntry = GetOrAdd(className.ToLowerInvariant());
         ApplyFilter();
     }
 
@@ -267,7 +295,7 @@ public class ClassEnhanceTemp
         ClassEnhanceEntry? entry = Find(key);
         if (entry is null)
         {
-            entry = new ClassEnhanceEntry(key, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(key), new("Lucky", "None", "None", "None", "None"));
+            entry = new ClassEnhanceEntry(key, CultureInfo.InvariantCulture.TextInfo.ToTitleCase(key), DefaultProfile);
             AddEntry(entry);
         }
         return entry;
