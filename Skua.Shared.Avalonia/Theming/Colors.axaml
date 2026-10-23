@@ -6,19 +6,19 @@
         Text on Primary -> SkuaAccentForegroundColor / SkuaAccentForegroundBrush
         These are updated at runtime by ThemeResourceApplicator via theme editor selections. -->
     
-    <Color x:Key="SkuaAccentColor">#10B981</Color>
+    <Color x:Key="SkuaAccentColor">#E3262D</Color>
     <Color x:Key="SkuaAccentForegroundColor">#FFFFFFFF</Color>
     <SolidColorBrush x:Key="SkuaAccentBrush" Color="{StaticResource SkuaAccentColor}" />
     <SolidColorBrush x:Key="SkuaAccentForegroundBrush" Color="{StaticResource SkuaAccentForegroundColor}" />
-    <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#059669" />
-    <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#047857" />
+    <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#E84A50" />
+    <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#C81F26" />
     <SolidColorBrush x:Key="SkuaDangerHoverBrush" Color="#EF4444" />
     <SolidColorBrush x:Key="SkuaDangerForegroundBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="SkuaTagBackgroundBrush" Color="#2210B981" />
-    <SolidColorBrush x:Key="SkuaTagBackgroundHoverBrush" Color="#3B10B981" />
-    <SolidColorBrush x:Key="SkuaTagBorderBrush" Color="#4D10B981" />
-    <SolidColorBrush x:Key="SkuaTagBorderHoverBrush" Color="#8010B981" />
-    <SolidColorBrush x:Key="SkuaTagTextBrush" Color="#34D399" />
+    <SolidColorBrush x:Key="SkuaTagBackgroundBrush" Color="#22E3262D" />
+    <SolidColorBrush x:Key="SkuaTagBackgroundHoverBrush" Color="#3BE3262D" />
+    <SolidColorBrush x:Key="SkuaTagBorderBrush" Color="#4DE3262D" />
+    <SolidColorBrush x:Key="SkuaTagBorderHoverBrush" Color="#80E3262D" />
+    <SolidColorBrush x:Key="SkuaTagTextBrush" Color="#EB5A5F" />
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">

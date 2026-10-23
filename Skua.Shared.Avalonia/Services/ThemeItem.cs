@@ -6,12 +6,12 @@ namespace Skua.Shared.Avalonia.Services;
 
 public class ThemeItem
 {
-    public string Name { get; set; } = "Skua";
+    public string Name { get; set; } = "SkuaZZ";
     public bool IsDarkTheme { get; set; } = true;
-    public Color PrimaryColor { get; set; } = Color.Parse("#FF607D8B");
-    public Color SecondaryColor { get; set; } = Color.Parse("#FF607D8B");
-    public Color PrimaryForegroundColor { get; set; } = Color.Parse("#FF000000");
-    public Color SecondaryForegroundColor { get; set; } = Color.Parse("#FF000000");
+    public Color PrimaryColor { get; set; } = Color.Parse("#FFE3262D");
+    public Color SecondaryColor { get; set; } = Color.Parse("#FFE3262D");
+    public Color PrimaryForegroundColor { get; set; } = Color.Parse("#FFFFFFFF");
+    public Color SecondaryForegroundColor { get; set; } = Color.Parse("#FFFFFFFF");
     public bool UseColorAdjustment { get; set; } = false;
     public float DesiredContrastRatio { get; set; } = 4.5f;
     public string ContrastValue { get; set; } = "Medium";

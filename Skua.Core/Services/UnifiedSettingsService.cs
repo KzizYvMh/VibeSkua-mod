@@ -351,7 +351,7 @@ public class UnifiedSettingsService
             newRoot.Shared.DefaultThemes = ConvertToStringCollection(val);
 
         if (oldData.TryGetValue("CurrentTheme", out val))
-            newRoot.Shared.CurrentTheme = val?.ToString() ?? "Skua,Dark,#FF607D8B,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All";
+            newRoot.Shared.CurrentTheme = val?.ToString() ?? "SkuaZZ,Dark,#FFE3262D,#FFE3262D,#FFFFFFFF,#FFFFFFFF,false,4.5,Medium,All";
 
         if (oldData.TryGetValue("UserGitHubToken", out val))
             newRoot.Shared.UserGitHubToken = val?.ToString() ?? string.Empty;

@@ -28,7 +28,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
     private readonly ISettingsService _settingsService;
     private static readonly Dictionary<string, Color> AccentMap = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["Default"] = Color.Parse("#10B981"),
+        ["Default"] = Color.Parse("#E3262D"),
         ["Pink"] = Color.Parse("#C9479A"),
         ["Ocean"] = Color.Parse("#2E6DD8"),
         ["Forest"] = Color.Parse("#2E9D57"),
@@ -75,7 +75,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
             defaultThemesColl = BuildDefaultThemesCollection();
             _settingsService.Set("DefaultThemes", defaultThemesColl);
         }
-        else if (EnsureBuiltInDefaultThemes(defaultThemesColl))
+        else if (ReplaceLegacySkuaTheme(defaultThemesColl) | EnsureBuiltInDefaultThemes(defaultThemesColl))
         {
             _settingsService.Set("DefaultThemes", defaultThemesColl);
         }
@@ -102,7 +102,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
         string? currentThemeCsv = _settingsService.Get<string>("CurrentTheme");
         ThemeItem? current = ThemeItem.FromString(currentThemeCsv);
 
-        if (current is null)
+        if (current is null || IsLegacySkuaTheme(current))
         {
             string? firstDefault = defaultThemesColl.Count > 0 ? defaultThemesColl[0] : null;
             current = ThemeItem.FromString(firstDefault) ?? new ThemeItem();
@@ -480,13 +480,35 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
     {
         return new StringCollection
         {
-            "Skua,Dark,#FF607D8B,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All",
+            "SkuaZZ,Dark,#FFE3262D,#FFE3262D,#FFFFFFFF,#FFFFFFFF,false,4.5,Medium,All",
             "RBot,Light,#FF9C934E,#FF9C934E,#FF000000,#FF000000",
             "Grimoire,Dark,#FFCC1F41,#FFCC1F41,#FFFFFFFF,#FFFFFFFF",
             "Purple,Dark,#FF9651D6,#FF9651D6,#FFFFFFFF,#FFFFFFFF,true,4.5,Medium,All",
             "Phonk,Dark,#FFFE27D7,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All",
             "Arrow,Dark,#ffeaeaea,#ff607d8b,#ff000000,#ff000000"
         };
+    }
+
+    // The inherited blue-gray "Skua" preset was the old default; SkuaZZ replaces it in place.
+    private static bool IsLegacySkuaTheme(ThemeItem theme)
+    {
+        return string.Equals(theme.Name, "Skua", StringComparison.OrdinalIgnoreCase)
+            && theme.PrimaryColor == Color.Parse("#FF607D8B");
+    }
+
+    private static bool ReplaceLegacySkuaTheme(StringCollection defaults)
+    {
+        for (int i = 0; i < defaults.Count; i++)
+        {
+            ThemeItem? theme = ThemeItem.FromString(defaults[i]);
+            if (theme is not null && IsLegacySkuaTheme(theme))
+            {
+                defaults[i] = BuildDefaultThemesCollection()[0];
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool EnsureBuiltInDefaultThemes(StringCollection defaults)

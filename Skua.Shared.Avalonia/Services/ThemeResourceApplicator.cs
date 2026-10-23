@@ -158,6 +158,21 @@ public static class ThemeResourceApplicator
         SetOrUpdateBrush(app.Resources, "SkuaAccentHoverBrush", Lighten(primary, 0.1));
         SetOrUpdateBrush(app.Resources, "SkuaAccentPressedBrush", Darken(primary, 0.12));
 
+        // Fluent controls (ToggleSwitch, etc.) otherwise follow the Windows accent color instead of the theme.
+        SetOrUpdateColor(app.Resources, "SystemAccentColor", primary);
+        SetOrUpdateColor(app.Resources, "SystemAccentColorLight1", Lighten(primary, 0.1));
+        SetOrUpdateColor(app.Resources, "SystemAccentColorLight2", Lighten(primary, 0.2));
+        SetOrUpdateColor(app.Resources, "SystemAccentColorLight3", Lighten(primary, 0.3));
+        SetOrUpdateColor(app.Resources, "SystemAccentColorDark1", Darken(primary, 0.1));
+        SetOrUpdateColor(app.Resources, "SystemAccentColorDark2", Darken(primary, 0.2));
+        SetOrUpdateColor(app.Resources, "SystemAccentColorDark3", Darken(primary, 0.3));
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchFillOn", primary);
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchFillOnPointerOver", Lighten(primary, 0.1));
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchFillOnPressed", Darken(primary, 0.12));
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchStrokeOn", primary);
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchStrokeOnPointerOver", Lighten(primary, 0.1));
+        SetOrUpdateBrush(app.Resources, "ToggleSwitchStrokeOnPressed", Darken(primary, 0.12));
+
         Color selectionLight = Color.FromArgb(0x33, primary.R, primary.G, primary.B);
         Color selectionDark = Color.FromArgb(0x66, primary.R, primary.G, primary.B);
         bool useDarkSelection = isDarkTheme ?? false;
@@ -209,7 +224,7 @@ public static class ThemeResourceApplicator
         string? accentForegroundHex = null,
         string? secondaryHex = null,
         string? secondaryForegroundHex = null,
-        string fallbackAccentHex = "#10B981",
+        string fallbackAccentHex = "#E3262D",
         bool? isDarkTheme = null)
     {
         Color primary = ParseColorSafe(accentHex, GetResourceColor(app, "SkuaAccentColor", fallbackAccentHex));

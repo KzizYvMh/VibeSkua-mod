@@ -160,7 +160,7 @@ public class SharedSettings
     public StringCollection DefaultThemes { get; set; } = new();
 
     [JsonPropertyName("CurrentTheme")]
-    public string CurrentTheme { get; set; } = "Skua,Dark,#FF607D8B,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All";
+    public string CurrentTheme { get; set; } = "SkuaZZ,Dark,#FFE3262D,#FFE3262D,#FFFFFFFF,#FFFFFFFF,false,4.5,Medium,All";
 
     [JsonPropertyName("UserGitHubToken")]
     public string UserGitHubToken { get; set; } = string.Empty;
@@ -203,7 +203,7 @@ public class SharedSettings
         {
             DefaultThemes = new()
             {
-                "Skua,Dark,#FF607D8B,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All",
+                "SkuaZZ,Dark,#FFE3262D,#FFE3262D,#FFFFFFFF,#FFFFFFFF,false,4.5,Medium,All",
                 "RBot,Light,#FF9C934E,#FF9C934E,#FF000000,#FF000000",
                 "Grimoire,Dark,#FFCC1F41,#FFCC1F41,#FFFFFFFF,#FFFFFFFF",
                 "Purple,Dark,#FF9651D6,#FF9651D6,#FFFFFFFF,#FFFFFFFF,true,4.5,Medium,All",
@@ -212,7 +212,7 @@ public class SharedSettings
         }
 
         if (string.IsNullOrEmpty(CurrentTheme))
-            CurrentTheme = "Skua,Dark,#FF607D8B,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All";
+            CurrentTheme = "SkuaZZ,Dark,#FFE3262D,#FFE3262D,#FFFFFFFF,#FFFFFFFF,false,4.5,Medium,All";
 
         if (string.IsNullOrEmpty(ApplicationVersion))
             ApplicationVersion = ClientFileSources.AssemblyVersion;
