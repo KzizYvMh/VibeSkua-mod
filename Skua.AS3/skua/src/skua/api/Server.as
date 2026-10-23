@@ -228,6 +228,26 @@ public class Server {
                     Main.instance.game.MsgBox.fClose();
                 }
             } catch (e:Error) {}
+
+            // 5. Hide mcLogin.warning (kick / ban alert frame)
+            try {
+                if (Main.instance.game.mcLogin != null && Main.instance.game.mcLogin.warning != null) {
+                    Main.instance.game.mcLogin.warning.visible = false;
+                }
+            } catch (e:Error) {}
+
+            // 6. Clear in-game popups (ui.mcPopup)
+            try {
+                if (Main.instance.game.ui != null && Main.instance.game.ui.mcPopup != null) {
+                    cleanModalStack(Main.instance.game.ui.mcPopup);
+                }
+            } catch (e:Error) {}
+
+            // 7. Reset internal Flash state flags
+            try {
+                if ("serialCmdMode" in Main.instance.game) Main.instance.game.serialCmdMode = false;
+                if ("connectingServer" in Main.instance.game) Main.instance.game.connectingServer = false;
+            } catch (e:Error) {}
         } catch (e:Error) {
             Main.instance.external.debug("Error in killLoginModals: " + e);
         }
@@ -287,6 +307,13 @@ public class Server {
             if (Main.instance.game.MsgBox != null && Main.instance.game.MsgBox.stage != null) {
                 if (Main.instance.game.MsgBox.cnt != null && Main.instance.game.MsgBox.cnt.strBody != null) {
                     return String(Main.instance.game.MsgBox.cnt.strBody.text);
+                }
+            }
+
+            // 4. Check mcLogin.warning (kick / ban alert message)
+            if (Main.instance.game.mcLogin != null && Main.instance.game.mcLogin.warning != null && Main.instance.game.mcLogin.warning.visible) {
+                if (Main.instance.game.mcLogin.warning.strMessage != null && Main.instance.game.mcLogin.warning.strMessage.text != null) {
+                    return String(Main.instance.game.mcLogin.warning.strMessage.text);
                 }
             }
         } catch (e:Error) {}

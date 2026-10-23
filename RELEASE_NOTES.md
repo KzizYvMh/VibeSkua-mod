@@ -1,3 +1,39 @@
+## VibeSkua v2.0.7
+
+This release introduces the Army Queue automation suite for sequential multi-squad execution, a universal auto-relogin watchdog engine with smart in-game intent recognition, granular Discord webhook health ping controls, and account management safety confirmations.
+
+### What's Changed
+
+### 1. Army Queue Automation Suite
+- **Sequential Multi-Squad Execution**: Define and run unlimited squads sequentially. Once a squad finishes, the next squad launches automatically.
+- **Queue Flow Controls**: Added Pause Queue (holds before next squad), Resume Queue, and Stop Queue controls.
+- **Per-Member Role Scripts**: Assign distinct scripts (Support, DPS, Taunter) per account or apply squad default scripts.
+- **Integrated Script Repository Browser**: Integrated "Search Scripts" window directly into the Army Queue for instant script browsing and assignment.
+- **Isolated Pre-Configured Script Options**: Configure script parameters individually per squad and account with isolated `.cfg` profiles running silently without dialog prompts.
+- **Uncapped Execution**: Removed arbitrary 30-minute timeout limits so long farming chains and boss rotations run uninterrupted.
+
+### 2. Universal Auto-Relogin Watchdog & Supervisor Engine
+- **Single Authoritative Supervisor**: Replaced fragmented reconnect checks with a high-frequency (10–50ms) watchdog tracking in-game status via `Flash.IsWorldLoaded && Player.LoggedIn`.
+- **Combat Death Immunity**: Tracking evaluates logged-in state rather than combat status, eliminating accidental relogins while awaiting respawn after dying in combat.
+- **Hardware-Level Event Bridging**: Hooked Flash-side `SFSEvent.onConnectionLost` to trigger recovery the exact millisecond the socket drops.
+- **In-Game Intentional Action Recognition**: Distinguishes intentional in-game actions ("Change Server" and "Log Out") from accidental drops via Flash UI button inspection (`btnLogout`, `btnChange`) and egress packet detection (`%xt%zm%eLO%`, `%xt%zm%eSL%`).
+- **Dynamic Watchdog Re-Arming**: Disarms relogin while browsing the server list and automatically re-arms when entering the game world.
+- **Server Forced Logout Bug Fix**: Fixed an issue where AQW server `%xt%cmd%-1%logout%` packets were unconditionally treated as normal user logouts and disabled auto-relogin.
+- **Nuclear Flash Modal Cleanup**: Comprehensive purge of `mcLogin.ModalStack`, `mcO.ModalStack`, `ui.mcPopup`, `MsgBox`, and kick/ban alerts (`mcLogin.warning`).
+- **Optimized TCP Ghost Session Backoff**: Replaced legacy 70s kick delay with a ~20s cooldown under `SafeRelogin` and sub-second recovery when disabled.
+- **Fatal Account Lockout Protection**: Detects permanent ban or account disabled messages to halt relogin loops and protect player IPs.
+
+### 3. Discord Webhook & Health Monitoring
+- **Toggleable Health Pings**: Added `Webhook: Enable Health Pings` setting to control periodic status embeds.
+- **Adjustable Interval**: Configurable ping interval with minimum 1-minute validation (default: 10 mins).
+- **Channel Isolation**: Personal Discord webhook channels only receive health pings when explicitly enabled.
+
+### 4. Account Manager Safety & Context Menus
+- **Deletion Confirmations**: Added confirmation dialogs before removing individual accounts, batch selections, or account groups.
+- **Context Menu Integration**: Added "Remove Selected" directly to the account grid right-click context menu.
+
+---
+
 ## VibeSkua v2.0.6
 
 This release introduces script pinning, playlist reordering in the Script Scheduler, native Skua Nexus webhook alerts with live statistics reporting, and major performance optimizations for script search and options dialogs.

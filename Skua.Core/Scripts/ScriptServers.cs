@@ -545,8 +545,16 @@ public partial class ScriptServers : ObservableRecipient, IScriptServers
                 string? modalText = Flash.Call<string>("getActiveModalMessage");
                 if (!string.IsNullOrWhiteSpace(modalText) && modalText != "null")
                 {
-                    ReloginLog($"Login modal warning detected: '{modalText.Trim()}'. Clearing dialog.");
+                    string trimmedModal = modalText.Trim();
+                    ReloginLog($"Login modal warning detected: '{trimmedModal}'. Clearing dialog.");
                     try { Flash.Call("killLoginModals"); } catch { }
+                    if (trimmedModal.Contains("banned", StringComparison.OrdinalIgnoreCase) ||
+                        trimmedModal.Contains("disabled", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ReloginLog($"FATAL: Account lockout detected ('{trimmedModal}'). Halting auto re-login loop.");
+                        IsIntentionalLogout = true;
+                        throw new OperationCanceledException($"Account lockout: {trimmedModal}");
+                    }
                     return false;
                 }
 
