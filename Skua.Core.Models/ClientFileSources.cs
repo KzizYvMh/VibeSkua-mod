@@ -10,7 +10,9 @@ public static class ClientFileSources
 {
     public static string AssemblyVersion { get; } = GetInformationalVersion();
     public static bool IsNightly { get; } = AssemblyVersion.Contains('-', StringComparison.Ordinal);
-    public static string DisplayVersion { get; } = IsNightly ? AssemblyVersion + "-N" : AssemblyVersion;
+    public static string DisplayVersion { get; } = (Assembly.GetEntryAssembly()?
+        .GetCustomAttributes<AssemblyMetadataAttribute>()
+        .FirstOrDefault(a => a.Key == "SkuaZZVersion")?.Value ?? AssemblyVersion) + (IsNightly ? "-N" : "");
 
     public static string LegacySkuaDIR { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Skua");
     public static string SkuaDIR { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SkuaZZ");
