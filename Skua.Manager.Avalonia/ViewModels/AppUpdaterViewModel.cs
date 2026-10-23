@@ -45,7 +45,7 @@ public partial class AppUpdaterViewModel : ObservableObject
         try
         {
             var locator = VelopackLocator.CreateDefaultForPlatform(null, null);
-            _updateManager = new UpdateManager(new GithubSource("https://github.com/NinjaXz/VibeSkua", null, false), null, locator);
+            _updateManager = new UpdateManager(new GithubSource("https://github.com/KzizYvMh/skuaziz", null, false), null, locator);
             if (!_updateManager.IsInstalled)
             {
                 _dispatcherService.Invoke(() =>
@@ -105,7 +105,7 @@ public partial class AppUpdaterViewModel : ObservableObject
             if (_updateManager == null)
             {
                 var locator = VelopackLocator.CreateDefaultForPlatform(null, null);
-                _updateManager = new UpdateManager(new GithubSource("https://github.com/NinjaXz/VibeSkua", null, false), null, locator);
+                _updateManager = new UpdateManager(new GithubSource("https://github.com/KzizYvMh/skuaziz", null, false), null, locator);
             }
 
             Action<int> progressObj = (progress) => 

@@ -311,7 +311,7 @@ public partial class MainWindow : Window
                     if (username != lastWrittenUsername)
                     {
                         lastWrittenUsername = username;
-                        string dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VibeSkuaTabs");
+                        string dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SkuaZZTabs");
                         System.IO.Directory.CreateDirectory(dir);
                         string file = System.IO.Path.Combine(dir, $"{Environment.ProcessId}.txt");
                         System.IO.File.WriteAllText(file, username);
@@ -329,7 +329,7 @@ public partial class MainWindow : Window
         _tabTitleSyncTimer?.Stop();
         try
         {
-            string file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VibeSkuaTabs", $"{Environment.ProcessId}.txt");
+            string file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SkuaZZTabs", $"{Environment.ProcessId}.txt");
             if (System.IO.File.Exists(file))
                 System.IO.File.Delete(file);
         }

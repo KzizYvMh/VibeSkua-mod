@@ -47,8 +47,8 @@ public static class AppShortcutHelper
         try
         {
             string appDir = AppContext.BaseDirectory;
-            string clientExe = Path.Combine(appDir, "VibeSkua.exe");
-            string managerExe = Path.Combine(appDir, "VibeSkua.Manager.exe");
+            string clientExe = Path.Combine(appDir, "SkuaZZ.exe");
+            string managerExe = Path.Combine(appDir, "SkuaZZ.Manager.exe");
 
             if (!File.Exists(clientExe) && !File.Exists(managerExe))
                 return;
@@ -63,10 +63,10 @@ public static class AppShortcutHelper
                 if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir))
                     continue;
 
-                string clientLnk = Path.Combine(dir, "VibeSkua.lnk");
-                string managerLnk = Path.Combine(dir, "VibeSkua Manager.lnk");
+                string clientLnk = Path.Combine(dir, "SkuaZZ.lnk");
+                string managerLnk = Path.Combine(dir, "SkuaZZ Manager.lnk");
 
-                // 1. Client shortcut (VibeSkua.lnk -> VibeSkua.exe)
+                // 1. Client shortcut (SkuaZZ.lnk -> SkuaZZ.exe)
                 if (File.Exists(clientExe))
                 {
                     bool needCreateClient = false;
@@ -77,13 +77,13 @@ public static class AppShortcutHelper
                             using var existingLink = new ShellLink(clientLnk);
                             string? target = existingLink.Target;
                             if (!string.IsNullOrEmpty(target) &&
-                                (target.Contains("VibeSkua.Manager", StringComparison.OrdinalIgnoreCase) ||
+                                (target.Contains("SkuaZZ.Manager", StringComparison.OrdinalIgnoreCase) ||
                                  target.Contains("Skua.Manager", StringComparison.OrdinalIgnoreCase)))
                             {
                                 // Fix legacy/buggy shortcut that pointed to manager instead of client
                                 existingLink.Target = clientExe;
                                 existingLink.WorkingDirectory = appDir;
-                                existingLink.Description = "VibeSkua - AQW Client";
+                                existingLink.Description = "SkuaZZ - AQW Client";
                                 existingLink.IconPath = clientExe;
                                 existingLink.IconIndex = 0;
                                 existingLink.Save();
@@ -107,7 +107,7 @@ public static class AppShortcutHelper
                             using var clientLink = new ShellLink();
                             clientLink.Target = clientExe;
                             clientLink.WorkingDirectory = appDir;
-                            clientLink.Description = "VibeSkua - AQW Client";
+                            clientLink.Description = "SkuaZZ - AQW Client";
                             clientLink.IconPath = clientExe;
                             clientLink.IconIndex = 0;
                             clientLink.Save(clientLnk);
@@ -118,7 +118,7 @@ public static class AppShortcutHelper
                     }
                 }
 
-                // 2. Manager shortcut (VibeSkua Manager.lnk -> VibeSkua.Manager.exe)
+                // 2. Manager shortcut (SkuaZZ Manager.lnk -> SkuaZZ.Manager.exe)
                 if (File.Exists(managerExe))
                 {
                     bool needCreateMgr = false;
@@ -138,7 +138,7 @@ public static class AppShortcutHelper
                             using var mgrLink = new ShellLink();
                             mgrLink.Target = managerExe;
                             mgrLink.WorkingDirectory = appDir;
-                            mgrLink.Description = "VibeSkua Manager";
+                            mgrLink.Description = "SkuaZZ Manager";
                             mgrLink.IconPath = managerExe;
                             mgrLink.IconIndex = 0;
                             mgrLink.Save(managerLnk);
@@ -171,14 +171,14 @@ public static class AppShortcutHelper
                 if (string.IsNullOrWhiteSpace(dir))
                     continue;
 
-                string clientLnk = Path.Combine(dir, "VibeSkua.lnk");
+                string clientLnk = Path.Combine(dir, "SkuaZZ.lnk");
                 if (File.Exists(clientLnk))
                 {
                     try
                     {
                         using var link = new ShellLink(clientLnk);
                         string? target = link.Target;
-                        if (target != null && (target.StartsWith(appDir, StringComparison.OrdinalIgnoreCase) || target.Contains("VibeSkua", StringComparison.OrdinalIgnoreCase)))
+                        if (target != null && (target.StartsWith(appDir, StringComparison.OrdinalIgnoreCase) || target.Contains("SkuaZZ", StringComparison.OrdinalIgnoreCase)))
                         {
                             File.Delete(clientLnk);
                         }

@@ -7,7 +7,7 @@ namespace Skua.Core.Services;
 
 public class ClientUpdateService : IClientUpdateService
 {
-    private const string UpdateRepository = "https://github.com/NinjaXz/VibeSkua";
+    private const string UpdateRepository = "https://github.com/KzizYvMh/skuaziz";
     private readonly IDialogService _dialogService;
     private readonly ISettingsService _settingsService;
     private UpdateManager? _updateManager;

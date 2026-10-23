@@ -37,7 +37,7 @@ internal static class Program
             .OnRestarted(_ => AppShortcutHelper.CreateOrUpdateShortcuts(createIfMissing: true))
             .Run();
 
-        const string eventName = @"Global\VibeSkua.Manager.SingleInstance.WakeEvent";
+        const string eventName = @"Global\SkuaZZ.Manager.SingleInstance.WakeEvent";
         bool createdNew;
         try
         {
@@ -45,7 +45,7 @@ internal static class Program
         }
         catch
         {
-            _singleInstanceWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "VibeSkua.Manager.SingleInstance.WakeEvent", out createdNew);
+            _singleInstanceWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "SkuaZZ.Manager.SingleInstance.WakeEvent", out createdNew);
         }
 
         if (!createdNew)

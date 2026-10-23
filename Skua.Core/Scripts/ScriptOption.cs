@@ -213,14 +213,14 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
     {
         if (enabled)
         {
-            if (CustomName != "Hidden" && CustomName != "VibeSkuaUser")
+            if (CustomName != "Hidden" && CustomName != "SkuaZZUser")
                 _originalName = CustomName;
             if (CustomGuild != "Hidden")
                 _originalGuild = CustomGuild;
 
             _originalHidePlayers = HidePlayers;
             HidePlayers = true;
-            CustomName = "VibeSkuaUser";
+            CustomName = "SkuaZZUser";
             CustomGuild = "Hidden";
 
             _streamerModeCts?.Cancel();
@@ -238,9 +238,9 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
                         if (flash == null) return;
 
                         // Override visuals only, NEVER overwrite objData as it breaks shops/inventory
-                        flash.Call("setGameObject", "world.myAvatar.pMC.pname.ti.text", "VibeSkuaUser");
+                        flash.Call("setGameObject", "world.myAvatar.pMC.pname.ti.text", "SkuaZZUser");
                         flash.Call("setGameObject", "world.myAvatar.pMC.pname.tg.text", "Hidden");
-                        flash.Call("setGameObject", "world.rootClass.ui.mcPortrait.strName.text", "VibeSkuaUser");
+                        flash.Call("setGameObject", "world.rootClass.ui.mcPortrait.strName.text", "SkuaZZUser");
                         flash.Call("setGameObject", "world.rootClass.ui.mcPortraitTarget.strName.text", "Hidden");
 
                         // Hide Gold/Coins visually instead of wiping the client's cached integer amounts

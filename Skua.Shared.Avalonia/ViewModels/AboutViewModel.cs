@@ -52,10 +52,10 @@ public class AboutViewModel : BotControlViewModelBase
 
     private async Task GetAboutContent()
     {
-        MarkdownDoc = @"# VibeSkua
+        MarkdownDoc = @"# SkuaZZ
 > **Note:** This project is **Vibe Coded**—built entirely through AI-assisted development, and pure momentum.
 
-A feature-rich, high-performance derivative of auqw/skua, engineered for advanced automation, stability, and streamlined multi-client management.
+A feature-rich, high-performance derivative of auqw/skua and VibeSkua, engineered for advanced automation, stability, and streamlined multi-client management.
 
 ### Key Features
 * **Discord Integration:** Native support for automated alerts, rare drops, and live-pings.

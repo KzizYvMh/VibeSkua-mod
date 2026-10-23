@@ -37,7 +37,7 @@ foreach ($Target in $Targets) {
 
     # 1. Copy Root Files from AppBin
     $RootAppFiles = @(
-        "VibeSkua.exe", "VibeSkua.dll", "VibeSkua.runtimeconfig.json", "VibeSkua.deps.json",
+        "SkuaZZ.exe", "SkuaZZ.dll", "SkuaZZ.runtimeconfig.json", "SkuaZZ.deps.json",
         "QuestData.json", "AdvancedSkills.json", "ScriptDates.json"
     )
     foreach ($file in $RootAppFiles) {
@@ -50,7 +50,7 @@ foreach ($Target in $Targets) {
     }
 
     # 2. Copy Root Files from ManagerBin
-    $RootManagerFiles = @("VibeSkua.Manager.exe", "VibeSkua.Manager.dll", "VibeSkua.Manager.runtimeconfig.json", "Velopack.dll")
+    $RootManagerFiles = @("SkuaZZ.Manager.exe", "SkuaZZ.Manager.dll", "SkuaZZ.Manager.runtimeconfig.json", "Velopack.dll")
     foreach ($file in $RootManagerFiles) {
         $src = Join-Path $ManagerBin $file
         if (Test-Path $src) {
@@ -66,7 +66,7 @@ foreach ($Target in $Targets) {
     }
 
     # 4. Copy all DLLs and XMLs into Assemblies (excluding root DLLs)
-    $ExcludedDlls = @("VibeSkua.dll", "VibeSkua.Manager.dll", "Skua.dll", "Skua.Manager.dll")
+    $ExcludedDlls = @("SkuaZZ.dll", "SkuaZZ.Manager.dll", "Skua.dll", "Skua.Manager.dll")
     $AppDlls = Get-ChildItem -Path $AppBin -Filter "*.dll" -File
     foreach ($dll in $AppDlls) {
         if ($ExcludedDlls -notcontains $dll.Name) {
@@ -133,8 +133,8 @@ foreach ($Target in $Targets) {
 
     # 9. Clean up stray files from target root
     $AllowedRootFiles = @(
-        "VibeSkua.exe", "VibeSkua.dll", "VibeSkua.runtimeconfig.json", "VibeSkua.deps.json",
-        "VibeSkua.Manager.exe", "VibeSkua.Manager.dll", "VibeSkua.Manager.runtimeconfig.json", "VibeSkua.Manager.deps.json",
+        "SkuaZZ.exe", "SkuaZZ.dll", "SkuaZZ.runtimeconfig.json", "SkuaZZ.deps.json",
+        "SkuaZZ.Manager.exe", "SkuaZZ.Manager.dll", "SkuaZZ.Manager.runtimeconfig.json", "SkuaZZ.Manager.deps.json",
         "Velopack.dll", "skua.swf", "AdvancedSkills.json", "QuestData.json", "ScriptDates.json"
     )
 

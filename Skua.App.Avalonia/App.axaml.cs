@@ -226,7 +226,7 @@ public partial class App : Application
                 string[] clientArgs = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(args, 1));
                 string payload = System.Text.Json.JsonSerializer.Serialize(clientArgs);
                 bool createdNew;
-                AppMutex = new System.Threading.Mutex(true, "VibeSkuaTabHostMutex", out createdNew);
+                AppMutex = new System.Threading.Mutex(true, "SkuaZZTabHostMutex", out createdNew);
 
                 if (!createdNew)
                 {
@@ -235,7 +235,7 @@ public partial class App : Application
                     {
                         try
                         {
-                            using System.IO.Pipes.NamedPipeClientStream pipeClient = new(".", "VibeSkuaTabHostPipe", System.IO.Pipes.PipeDirection.Out, System.IO.Pipes.PipeOptions.None);
+                            using System.IO.Pipes.NamedPipeClientStream pipeClient = new(".", "SkuaZZTabHostPipe", System.IO.Pipes.PipeDirection.Out, System.IO.Pipes.PipeOptions.None);
                             pipeClient.Connect(1000);
                             using System.IO.StreamWriter sw = new(pipeClient);
                             sw.WriteLine(payload);
@@ -260,7 +260,7 @@ public partial class App : Application
                     try
                     {
                         AppMutex?.Dispose();
-                        AppMutex = new System.Threading.Mutex(true, "VibeSkuaTabHostMutex");
+                        AppMutex = new System.Threading.Mutex(true, "SkuaZZTabHostMutex");
                     }
                     catch { }
                 }

@@ -1,4 +1,4 @@
-name: Release VibeSkua
+name: Release SkuaZZ
 
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
           if (Test-Path "Build\Releases") {
               Remove-Item "Build\Releases" -Recurse -Force
           }
-          vpk pack -u VibeSkua -v $ver -p "Build" -e VibeSkua.Manager.exe --packTitle "VibeSkua Manager" --icon "Skua.Shared.Avalonia\Assets\SkuaIcon.ico" -o "Build\Releases" -r win-x64
+          vpk pack -u SkuaZZ -v $ver -p "Build" -e SkuaZZ.Manager.exe --packTitle "SkuaZZ Manager" --icon "Skua.Shared.Avalonia\Assets\SkuaIcon.ico" -o "Build\Releases" -r win-x64
           if ($LASTEXITCODE -ne 0) {
               throw "Velopack packaging failed with exit code $LASTEXITCODE"
           }
@@ -84,7 +84,7 @@ jobs:
           $notesFile = "RELEASE_NOTES.md"
           if (Test-Path "RELEASE_NOTES.md") {
               $content = Get-Content "RELEASE_NOTES.md" -Raw
-              if ($content -match "(?s)(##\s+VibeSkua\s+v?$ver\b.*?)(?=\r?\n##\s+VibeSkua\s+v\d|\Z)") {
+              if ($content -match "(?s)(##\s+(?:SkuaZZ|VibeSkua)\s+v?$ver\b.*?)(?=\r?\n##\s+(?:SkuaZZ|VibeSkua)\s+v\d|\Z)") {
                   $extracted = $Matches[1].Trim()
                   if ($content -match "(?s)(###\s+Installation\s+&.*)") {
                       if (-not ($extracted -match "###\s+Installation")) {
@@ -109,7 +109,7 @@ jobs:
               }
           } else {
               Write-Host "Creating new release for $tag..."
-              gh release create $tag $files --title "VibeSkua $tag" @notesArg
+              gh release create $tag $files --title "SkuaZZ $tag" @notesArg
               if ($LASTEXITCODE -ne 0) { throw "Failed to create release." }
           }
           Write-Host "Release $tag published successfully!"

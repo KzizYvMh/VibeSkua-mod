@@ -8,7 +8,7 @@ public static class FlashTrustManager
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "Macromedia", "Flash Player", "#Security", "FlashPlayerTrust");
 
-    private static readonly string TrustFileName = "VibeSkua.cfg";
+    private static readonly string TrustFileName = "SkuaZZ.cfg";
 
     public static void EnsureTrustFile()
     {

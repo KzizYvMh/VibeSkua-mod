@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo ==========================================================
-echo               VibeSkua Release Packager
+echo               SkuaZZ Release Packager
 echo ==========================================================
 echo.
 
@@ -48,7 +48,7 @@ if exist "%~dp0Build\Releases" (
     rmdir /s /q "%~dp0Build\Releases" >nul 2>&1
 )
 
-vpk pack -u VibeSkua -v %VERSION% -p "%~dp0Build" -e VibeSkua.Manager.exe --icon "%~dp0Skua.Shared.Avalonia\Assets\SkuaIcon.ico" -o "%~dp0Build\Releases" -r win-x64
+vpk pack -u SkuaZZ -v %VERSION% -p "%~dp0Build" -e SkuaZZ.Manager.exe --icon "%~dp0Skua.Shared.Avalonia\Assets\SkuaIcon.ico" -o "%~dp0Build\Releases" -r win-x64
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Velopack packaging failed.
     pause
@@ -57,20 +57,20 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo ==========================================================
-echo           VibeSkua Release Packaging Complete!
+echo           SkuaZZ Release Packaging Complete!
 echo ==========================================================
 echo.
 echo Output location: "%~dp0Build\Releases"
 echo.
 echo Generated Assets:
-echo   [1] VibeSkua-win-Setup.exe      - 1-click installer for new users
-echo   [2] VibeSkua-win-Portable.zip   - Zero-install portable zip
-echo   [3] VibeSkua-%VERSION%-full.nupkg - Background auto-update payload
+echo   [1] SkuaZZ-win-Setup.exe      - 1-click installer for new users
+echo   [2] SkuaZZ-win-Portable.zip   - Zero-install portable zip
+echo   [3] SkuaZZ-%VERSION%-full.nupkg - Background auto-update payload
 echo   [4] releases.win.json           - Update manifest for GitHub Releases
 echo.
 echo Next steps:
 echo   1. Push your code to GitHub: git push origin latestreleasereadyimo:main
-echo   2. Go to https://github.com/NinjaXz/VibeSkua/releases/new
+echo   2. Go to https://github.com/KzizYvMh/skuaziz/releases/new
 echo   3. Create tag 'v%VERSION%' and upload the files from Build\Releases\
 echo ==========================================================
 echo.

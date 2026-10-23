@@ -9,13 +9,13 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ApplicationIcon>../Skua.Shared.Avalonia/Assets/SkuaIcon.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyName>VibeSkua</AssemblyName>
-        <AssemblyTitle>VibeSkua</AssemblyTitle>
+        <AssemblyName>SkuaZZ</AssemblyName>
+        <AssemblyTitle>SkuaZZ</AssemblyTitle>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup>
-        <AssemblyMetadata Include="Skua.ClientId" Value="VibeSkuaAvalonia" />
+        <AssemblyMetadata Include="Skua.ClientId" Value="SkuaZZAvalonia" />
     </ItemGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">

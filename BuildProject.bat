@@ -2,8 +2,8 @@
 setlocal
 
 echo Closing any running instances...
-taskkill /IM VibeSkua.exe /F >nul 2>&1
-taskkill /IM VibeSkua.Manager.exe /F >nul 2>&1
+taskkill /IM SkuaZZ.exe /F >nul 2>&1
+taskkill /IM SkuaZZ.Manager.exe /F >nul 2>&1
 taskkill /IM Skua.exe /F >nul 2>&1
 taskkill /IM Skua.Manager.exe /F >nul 2>&1
 
@@ -71,6 +71,6 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo ==========================================================
 echo Fast Build complete! The application is located in the Build folder.
-echo You can run VibeSkua.Manager.exe or VibeSkua.exe from there.
+echo You can run SkuaZZ.Manager.exe or SkuaZZ.exe from there.
 echo ==========================================================
 if "%~1"=="" pause

@@ -280,7 +280,7 @@ public partial class TabbedHostWindow : Window
     {
         _initialArgs = initialArgs ?? Array.Empty<string>();
         InitializeComponent();
-        Title = $"VibeSkua V{Skua.Core.Models.ClientFileSources.DisplayVersion}";
+        Title = $"SkuaZZ V{Skua.Core.Models.ClientFileSources.DisplayVersion}";
 
         var options = Ioc.Default.GetRequiredService<IScriptOption>();
         MiscOptionsMenu.DataContext = options;
@@ -340,7 +340,7 @@ public partial class TabbedHostWindow : Window
         
         Task.Run(() =>
         {
-            string dir = Path.Combine(Path.GetTempPath(), "VibeSkuaTabs");
+            string dir = Path.Combine(Path.GetTempPath(), "SkuaZZTabs");
             if (!Directory.Exists(dir)) return;
 
             var updates = new List<(TabItem Tab, string Username)>();
@@ -581,7 +581,7 @@ public partial class TabbedHostWindow : Window
                     info.Process.Kill();
                     info.Process.WaitForExit(500);
                 }
-                try { File.Delete(Path.Combine(Path.GetTempPath(), "VibeSkuaTabs", $"{info.Process.Id}.txt")); } catch { }
+                try { File.Delete(Path.Combine(Path.GetTempPath(), "SkuaZZTabs", $"{info.Process.Id}.txt")); } catch { }
             }
             catch { }
         }
@@ -617,7 +617,7 @@ public partial class TabbedHostWindow : Window
                 try
                 {
                     pipeServer = new NamedPipeServerStream(
-                        "VibeSkuaTabHostPipe",
+                        "SkuaZZTabHostPipe",
                         PipeDirection.In,
                         NamedPipeServerStream.MaxAllowedServerInstances,
                         PipeTransmissionMode.Byte,
@@ -1548,7 +1548,7 @@ public partial class TabbedHostWindow : Window
                         info.Process.Kill();
                     if (info.Process != null)
                     {
-                        try { File.Delete(Path.Combine(Path.GetTempPath(), "VibeSkuaTabs", $"{info.Process.Id}.txt")); } catch { }
+                        try { File.Delete(Path.Combine(Path.GetTempPath(), "SkuaZZTabs", $"{info.Process.Id}.txt")); } catch { }
                     }
                 }
                 catch { }
@@ -1956,7 +1956,7 @@ public partial class TabbedHostWindow : Window
         {
             try
             {
-                string file = Path.Combine(Path.GetTempPath(), "VibeSkuaTabs", $"{info.Process.Id}.txt");
+                string file = Path.Combine(Path.GetTempPath(), "SkuaZZTabs", $"{info.Process.Id}.txt");
                 if (File.Exists(file))
                 {
                     string name = File.ReadAllText(file).Trim();
@@ -2067,7 +2067,7 @@ public partial class TabbedHostWindow : Window
 
         settings.ReloadSettings();
 
-        // 1. Ensure the account exists in ManagedAccounts so it appears in VibeSkua Manager!
+        // 1. Ensure the account exists in ManagedAccounts so it appears in SkuaZZ Manager!
         var accs = settings.Get<Dictionary<string, AccountData>>("ManagedAccounts") ?? new();
         if (!accs.ContainsKey(accountName))
         {

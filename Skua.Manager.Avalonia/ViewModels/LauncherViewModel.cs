@@ -57,7 +57,7 @@ public partial class LauncherViewModel : BotControlViewModelBase, IDisposable
         {
             try
             {
-                ProcessInfo procInfo = new(message.Process, message.AccountName ?? $"VibeSkua #{message.Process.Id}");
+                ProcessInfo procInfo = new(message.Process, message.AccountName ?? $"SkuaZZ #{message.Process.Id}");
                 _dispatcherService.Invoke(() =>
                 {
                     try
@@ -109,7 +109,7 @@ public partial class LauncherViewModel : BotControlViewModelBase, IDisposable
                 Process? proc = Process.Start(startInfo);
                 if (proc != null)
                 {
-                    ProcessInfo procInfo = new(proc, $"VibeSkua #{proc.Id}");
+                    ProcessInfo procInfo = new(proc, $"SkuaZZ #{proc.Id}");
                     _dispatcherService.Invoke(() => SkuaProcesses.Add(procInfo));
                 }
             }
@@ -117,7 +117,7 @@ public partial class LauncherViewModel : BotControlViewModelBase, IDisposable
             {
                 IDialogService dialogService = Ioc.Default.GetService<IDialogService>()!;
 
-                dialogService.ShowMessageBox($"Failed to launch VibeSkua. Executable path: {SkuaExecutableLocator.ExecutablePath}", "Error");
+                dialogService.ShowMessageBox($"Failed to launch SkuaZZ. Executable path: {SkuaExecutableLocator.ExecutablePath}", "Error");
             }
         });
     }

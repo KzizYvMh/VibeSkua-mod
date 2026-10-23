@@ -1,4 +1,4 @@
-# VibeSkua
+# SkuaZZ
 > **Note:** This project is **Vibe Coded**—built through AI-assisted development, and pure momentum.
 
 A feature-rich, high-performance rehaul of [auqw/skua](https://github.com/auqw/skua) (v1.4.3.0), building upon the early Avalonia port by [ArrowDev](https://github.com/ArrowDev123/Skua) (BlackArrow on Discord). Upgraded with native multi-client army orchestration, headless performance, and core stability fixes.
@@ -6,7 +6,7 @@ A feature-rich, high-performance rehaul of [auqw/skua](https://github.com/auqw/s
 ---
 
 ## The Avalonia UI Rehaul (What's New in 2.0)
-VibeSkua has officially transitioned away from legacy WPF to a ground-up modern desktop architecture:
+SkuaZZ has officially transitioned away from legacy WPF to a ground-up modern desktop architecture:
 
 * 🎨 **Modern Fluent Avalonia Shell:** Completely redesigned from scratch using **Avalonia 11**. Features a sleek, modern dark glassmorphism theme, crisp typography, responsive layout scaling, and smooth animations.
 * ⚡ **Unified Multi-Client Tabbed Host:** Native multi-client workspace (`TabbedHostWindow`) with dynamic scrollable tabs, instant 1-click tab creation, and seamless instance management without overlapping taskbar clutter.
@@ -16,10 +16,10 @@ VibeSkua has officially transitioned away from legacy WPF to a ground-up modern 
 ---
 
 ## Skua Architecture Comparison
-The following overview compares the systems and core features between the legacy WPF `auqw/skua` client and VibeSkua.
+The following overview compares the systems and core features between the legacy WPF `auqw/skua` client and SkuaZZ.
 
 ### Quality of Life & Features
-| Feature | Original (Legacy WPF) | VibeSkua (Avalonia) |
+| Feature | Original (Legacy WPF) | SkuaZZ (Avalonia) |
 | :--- | :--- | :--- |
 | **UI Framework & Design** | Legacy WPF framework. | **Rebuilt in Avalonia UI.** Features sleek Fluent dark styling, smooth animations, and hardware acceleration. |
 | **Account Tabs & Multi-Client** | Required running individual separate windows which clutter the screen and taskbar. | Native `TabbedHostWindow` host with dynamic SWF patching and horizontal tab bar. |
@@ -60,10 +60,10 @@ The following overview compares the systems and core features between the legacy
 
 ## Installation & Downloads
 
-Pre-built binaries are available on the [**Releases**](https://github.com/NinjaXz/VibeSkua/releases) page:
+Pre-built binaries are available on the [**Releases**](https://github.com/KzizYvMh/skuaziz/releases) page:
 
-* **`VibeSkua-win-Setup.exe` (Recommended):** 1-click Windows installer. Installs cleanly to `%LocalAppData%\VibeSkua`, provisions Desktop and Start Menu shortcuts, and enables seamless background auto-updating.
-* **`VibeSkua-win-Portable.zip`:** Zero-install portable package. Extract anywhere and launch `VibeSkua.Manager.exe` or `VibeSkua.exe`.
+* **`SkuaZZ-win-Setup.exe` (Recommended):** 1-click Windows installer. Installs cleanly to `%LocalAppData%\SkuaZZ`, provisions Desktop and Start Menu shortcuts, and enables seamless background auto-updating.
+* **`SkuaZZ-win-Portable.zip`:** Zero-install portable package. Extract anywhere and launch `SkuaZZ.Manager.exe` or `SkuaZZ.exe`.
 
 ---
 
@@ -95,7 +95,7 @@ dotnet build Skua.sln -c Release -p:WarningLevel=0 --nologo
 
 * **[auqw/skua](https://github.com/auqw/skua)** — Original Skua framework and core botting API.
 * **[ArrowDev](https://github.com/ArrowDev123/Skua) (BlackArrow on Discord)** — Early Avalonia UI port foundation.
-* **NinjaXz** — Client overhaul: engineered the multi-client tabbed host, army controls & grid view, headless mode, autonomous script scheduler, repaired broken subsystems & crash loops, and modernized the desktop UI with Avalonia.
+* **[NinjaXz / VibeSkua](https://github.com/NinjaXz/VibeSkua)** — Client overhaul: engineered the multi-client tabbed host, army controls & grid view, headless mode, autonomous script scheduler, repaired broken subsystems & crash loops, and modernized the desktop UI with Avalonia.
 
 ---
 

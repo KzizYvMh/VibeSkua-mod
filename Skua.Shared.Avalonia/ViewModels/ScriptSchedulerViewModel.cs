@@ -478,6 +478,6 @@ public partial class ScriptSchedulerViewModel : BotControlViewModelBase
                 return servers.CachedUsername!;
         }
         catch { }
-        return "VibeSkua Bot";
+        return "SkuaZZ Bot";
     }
 }

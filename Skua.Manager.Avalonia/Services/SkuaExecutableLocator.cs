@@ -12,7 +12,7 @@ internal static class SkuaExecutableLocator
 
     private static string Resolve()
     {
-        string vibePath = Path.Combine(AppContext.BaseDirectory, "VibeSkua.exe");
+        string vibePath = Path.Combine(AppContext.BaseDirectory, "SkuaZZ.exe");
         if (File.Exists(vibePath))
             return vibePath;
 
@@ -23,15 +23,15 @@ internal static class SkuaExecutableLocator
         string repositoryRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
         string[] candidates =
         [
-            Path.Combine(repositoryRoot, "Build", "VibeSkua.exe"),
+            Path.Combine(repositoryRoot, "Build", "SkuaZZ.exe"),
             Path.Combine(repositoryRoot, "Build", "Skua.exe"),
-            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "VibeSkua.exe"),
+            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "SkuaZZ.exe"),
             Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "Skua.exe"),
-            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "win-x64", "VibeSkua.exe"),
+            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "win-x64", "SkuaZZ.exe"),
             Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Release", "net10.0-windows", "win-x64", "Skua.exe"),
-            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "VibeSkua.exe"),
+            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "SkuaZZ.exe"),
             Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "Skua.exe"),
-            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "win-x64", "VibeSkua.exe"),
+            Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "win-x64", "SkuaZZ.exe"),
             Path.Combine(repositoryRoot, "Skua.App.Avalonia", "bin", "Debug", "net10.0-windows", "win-x64", "Skua.exe")
         ];
 
