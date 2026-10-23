@@ -70,6 +70,50 @@ public partial class App : Application
 
     public static System.Threading.Mutex AppMutex;
 
+    /// <summary>True for the launcher that owns SkuaZZTabHostMutex (legacy pipe + tray icon).</summary>
+    public static bool IsPrimaryLauncher { get; private set; }
+
+    /// <summary>Pid of the launcher an embedded client belongs to. Updated when the tab moves to another launcher.</summary>
+    public static volatile int ChildHostPid;
+
+    private static bool IsProcessAlive(int pid)
+    {
+        try
+        {
+            using var proc = System.Diagnostics.Process.GetProcessById(pid);
+            return !proc.HasExited;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryForwardToExistingLauncher(string payload, int targetLauncherPid)
+    {
+        // Explicit target: allow extra time because the Manager may have just started that launcher.
+        if (targetLauncherPid != 0 && LauncherRegistry.TrySend(targetLauncherPid, payload, 15000))
+            return true;
+
+        LauncherHostInfo? recent = LauncherRegistry.GetMostRecentlyFocused();
+        if (recent != null && LauncherRegistry.TrySend(recent.Pid, payload))
+            return true;
+
+        // Launchers from older builds only listen on the legacy pipe.
+        bool legacyHostRunning;
+        try
+        {
+            using var probe = System.Threading.Mutex.OpenExisting("SkuaZZTabHostMutex");
+            legacyHostRunning = true;
+        }
+        catch
+        {
+            legacyHostRunning = false;
+        }
+
+        return legacyHostRunning && LauncherRegistry.TrySendToPipe(LauncherRegistry.LegacyPipeName, payload, 1000);
+    }
+
     public override void OnFrameworkInitializationCompleted()
     {
         RegisterGlobalExceptionHandlers();
@@ -115,6 +159,18 @@ public partial class App : Application
         ApplyThemeFromService(themeService);
 
         string[] args = Environment.GetCommandLineArgs();
+
+        // The Manager opens a script's options without starting a launcher or a game client
+        int configureIndex = Array.IndexOf(args, ConfigureScriptArg);
+        if (configureIndex >= 0 && configureIndex + 1 < args.Length && ApplicationLifetime is IClassicDesktopStyleApplicationLifetime configureDesktop)
+        {
+            configureDesktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            string scriptPath = args[configureIndex + 1];
+            Dispatcher.UIThread.Post(() => ConfigureScriptAndExit(configureDesktop, scriptPath));
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         bool hasEmbedFlag = false;
         long embedHwnd = 0;
         int hostPid = 0;
@@ -141,8 +197,6 @@ public partial class App : Application
                 clientFiles.CreateDirectories();
                 clientFiles.CreateFiles();
             });
-
-            SetupTrayIcon();
         }
         else
         {
@@ -201,72 +255,58 @@ public partial class App : Application
 
                 if (hostPid != 0)
                 {
+                    // The host can change when the tab is moved to another launcher (WM_SKUA_SET_HOST),
+                    // so the watcher always re-reads ChildHostPid instead of holding one Process.
+                    ChildHostPid = hostPid;
                     Task.Run(async () =>
                     {
-                        try
+                        while (true)
                         {
-                            var parentProcess = System.Diagnostics.Process.GetProcessById(hostPid);
-                            parentProcess.EnableRaisingEvents = true;
-                            parentProcess.Exited += (_, _) =>
+                            int watchedPid = ChildHostPid;
+                            if (!IsProcessAlive(watchedPid))
                             {
-                                try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
-                            };
-                            while (!parentProcess.HasExited)
-                            {
-                                await Task.Delay(1000);
+                                // Give a pending host switch a moment to land before giving up.
+                                await Task.Delay(500);
+                                if (ChildHostPid == watchedPid)
+                                    break;
+                                continue;
                             }
+                            await Task.Delay(1000);
                         }
-                        catch { }
                         try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { }
                     });
                 }
             }
             else
             {
-                string[] clientArgs = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(args, 1));
+                string[] rawClientArgs = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(args, 1));
+                string[] clientArgs = LauncherRegistry.ExtractRoutingArgs(rawClientArgs, out bool newLauncher, out int targetLauncherPid, out bool startEmpty);
                 string payload = System.Text.Json.JsonSerializer.Serialize(clientArgs);
-                bool createdNew;
-                AppMutex = new System.Threading.Mutex(true, "SkuaZZTabHostMutex", out createdNew);
 
-                if (!createdNew)
+                // An empty launcher is always a new window; forwarding it would only add a blank tab elsewhere.
+                if (startEmpty)
+                    newLauncher = true;
+
+                if (!newLauncher && TryForwardToExistingLauncher(payload, targetLauncherPid))
                 {
-                    bool forwarded = false;
-                    for (int attempt = 0; attempt < 5; attempt++)
-                    {
-                        try
-                        {
-                            using System.IO.Pipes.NamedPipeClientStream pipeClient = new(".", "SkuaZZTabHostPipe", System.IO.Pipes.PipeDirection.Out, System.IO.Pipes.PipeOptions.None);
-                            pipeClient.Connect(1000);
-                            using System.IO.StreamWriter sw = new(pipeClient);
-                            sw.WriteLine(payload);
-                            sw.Flush();
-                            forwarded = true;
-                            break;
-                        }
-                        catch
-                        {
-                            System.Threading.Thread.Sleep(150);
-                        }
-                    }
-
-                    if (forwarded)
-                    {
-                        Environment.Exit(0);
-                        return;
-                    }
-
-                    // If pipe forwarding failed, the previous host is dead or non-responsive.
-                    // Recover and take over as the host window.
-                    try
-                    {
-                        AppMutex?.Dispose();
-                        AppMutex = new System.Threading.Mutex(true, "SkuaZZTabHostMutex");
-                    }
-                    catch { }
+                    Environment.Exit(0);
+                    return;
                 }
 
+                // The first launcher also serves the legacy pipe and owns the tray icon.
+                bool createdNew;
+                AppMutex = new System.Threading.Mutex(true, "SkuaZZTabHostMutex", out createdNew);
+                if (!createdNew)
+                {
+                    try { AppMutex.Dispose(); } catch { }
+                    AppMutex = null;
+                }
+                IsPrimaryLauncher = createdNew;
+                if (IsPrimaryLauncher)
+                    SetupTrayIcon();
+
                 // Master instance
-                Views.TabbedHostWindow masterWindow = new(clientArgs) { WindowStartupLocation = global::Avalonia.Controls.WindowStartupLocation.CenterScreen };
+                Views.TabbedHostWindow masterWindow = new(startEmpty ? Array.Empty<string>() : clientArgs, startEmpty) { WindowStartupLocation = global::Avalonia.Controls.WindowStartupLocation.CenterScreen };
                 desktop.MainWindow = masterWindow;
             }
             desktop.Exit += OnDesktopExit;
@@ -274,6 +314,44 @@ public partial class App : Application
 
         Task.Run(() => TryInitializeStartupServices());
         base.OnFrameworkInitializationCompleted();
+    }
+
+    public const string ConfigureScriptArg = "--configure-script";
+
+    // Compiles the script only to read its Options fields, shows the same Script Options dialog the bot uses
+    // (saved to options\<OptionsStorage>.cfg) and exits.
+    private static async void ConfigureScriptAndExit(IClassicDesktopStyleApplicationLifetime desktop, string scriptPath)
+    {
+        IDialogService dialogService = Ioc.Default.GetRequiredService<IDialogService>();
+        try
+        {
+            if (!System.IO.File.Exists(scriptPath))
+            {
+                dialogService.ShowMessageBox($"Script not found:\n{scriptPath}", "Script Options");
+                return;
+            }
+
+            IScriptManager manager = Ioc.Default.GetRequiredService<IScriptManager>();
+            manager.SetLoadedScript(scriptPath);
+            await Task.Run(Skua.Core.Scripts.CoreAdvancedPatcher.EnsurePatched);
+            string source = await System.IO.File.ReadAllTextAsync(scriptPath);
+            object? script = await Task.Run(() => manager.Compile(source));
+            manager.LoadScriptConfig(script);
+
+            IScriptOptionContainer? config = manager.Config;
+            if (config is null || (config.Options.Count == 0 && config.MultipleOptions.Count == 0))
+                dialogService.ShowMessageBox($"{System.IO.Path.GetFileNameWithoutExtension(scriptPath)} has no options to configure.", "Script Options");
+            else
+                config.Configure();
+        }
+        catch (Exception ex)
+        {
+            dialogService.ShowMessageBox($"Could not load the script options:\n\n{ex.Message}", "Script Options");
+        }
+        finally
+        {
+            desktop.Shutdown();
+        }
     }
 
     private static void RegisterGlobalExceptionHandlers()

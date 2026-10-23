@@ -61,6 +61,7 @@ public partial class MainWindow : Window
     private const int WM_SKUA_JUMP_PLAYER = 0x0400 + 457;
     private const int WM_SKUA_LOGIN = 0x0400 + 447;
     private const int WM_SKUA_GRIDVIEW = 0x0400 + 444;
+    private const int WM_SKUA_SET_HOST = 0x0400 + 441;
     private const int WM_SKUA_AUTO_ATTACK = 0x0400 + 459;
     private const int WM_SKUA_OPEN_BANK = 0x0400 + 460;
 
@@ -385,6 +386,16 @@ public partial class MainWindow : Window
                     }
                 }
             }
+        }
+
+        if (uMsg == WM_SKUA_SET_HOST)
+        {
+            // Tab moved to another launcher: wParam = new host hwnd, lParam = new host pid.
+            if (lParam != IntPtr.Zero)
+                App.ChildHostPid = lParam.ToInt32();
+            if (wParam != IntPtr.Zero)
+                Skua.Core.AppStartup.HotKeys.HostHwnd = wParam;
+            return new IntPtr(1);
         }
 
         if (uMsg == WM_SKUA_GRIDVIEW)

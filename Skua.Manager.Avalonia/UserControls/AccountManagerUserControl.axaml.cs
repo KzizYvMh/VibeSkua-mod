@@ -43,6 +43,11 @@ public partial class AccountManagerUserControl : UserControl
         Unloaded -= OnUnloaded;
     }
 
+    private void LaunchTargetComboBox_DropDownOpened(object? sender, EventArgs e)
+    {
+        _viewModel.RefreshLaunchTargets();
+    }
+
     private void ClearPasswordBox(AccountManagerUserControl recipient, ClearPasswordBoxMessage message)
     {
         recipient.PswBox.Clear();

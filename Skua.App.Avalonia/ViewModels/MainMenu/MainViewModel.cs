@@ -10,7 +10,7 @@ namespace Skua.App.Avalonia.ViewModels.MainMenu;
 public sealed partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _title = "SkuaZZ V2.0.7";
+    private string _title = "SkuaZZ V1.0.0";
 
     public MainMenuViewModel MainMenu { get; }
 

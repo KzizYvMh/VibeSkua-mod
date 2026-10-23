@@ -122,6 +122,40 @@ public partial class LauncherViewModel : BotControlViewModelBase, IDisposable
         });
     }
 
+    [RelayCommand]
+    public async Task LaunchEmptyLauncher()
+    {
+        await Task.Run(() =>
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new(SkuaExecutableLocator.ExecutablePath)
+                {
+                    WorkingDirectory = SkuaExecutableLocator.WorkingDirectory
+                };
+                startInfo.ArgumentList.Add(LauncherRegistry.EmptyArg);
+                if (_settingsService.Get("syncTheme", false))
+                {
+                    startInfo.ArgumentList.Add("--use-theme");
+                    startInfo.ArgumentList.Add(_settingsService.Get("CurrentTheme", "no-theme"));
+                }
+
+                Process? proc = Process.Start(startInfo);
+                if (proc != null)
+                {
+                    ProcessInfo procInfo = new(proc, $"SkuaZZ Launcher #{proc.Id}");
+                    _dispatcherService.Invoke(() => SkuaProcesses.Add(procInfo));
+                }
+            }
+            catch
+            {
+                IDialogService dialogService = Ioc.Default.GetService<IDialogService>()!;
+
+                dialogService.ShowMessageBox($"Failed to launch SkuaZZ. Executable path: {SkuaExecutableLocator.ExecutablePath}", "Error");
+            }
+        });
+    }
+
     public void KillAllSkuaProcesses()
     {
         Task.Factory.StartNew(() =>

@@ -189,6 +189,7 @@ public static class Services
         services.AddTransient(CoreBots.CreateViewModel);
         services.AddTransient(CoreBots.CreateOptions);
         services.AddTransient<CBOClassEquipmentViewModel>();
+        services.AddTransient<CBOClassEnhanceViewModel>();
         services.AddTransient<CBOClassSelectViewModel>();
         services.AddTransient<CBOLoadoutViewModel>();
 

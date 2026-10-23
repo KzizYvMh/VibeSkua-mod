@@ -172,25 +172,36 @@ public partial class OptionItemControl : UserControl
         if (!string.IsNullOrEmpty(vm.Description))
             ToolTip.SetTip(title, vm.Description);
 
-        ToggleButton toggleButton = CreateBoundToggleButton(vm);
-        toggleButton.Classes.Add("option-chip");
-        toggleButton.Height = StandardOptionHeight;
-        toggleButton.MinWidth = 76;
-        toggleButton.HorizontalAlignment = HorizontalAlignment.Right;
-
-        void UpdateToggleText()
-        {
-            toggleButton.Content = toggleButton.IsChecked == true ? "Enabled" : "Disabled";
-        }
-        UpdateToggleText();
-        toggleButton.IsCheckedChanged += (_, _) => UpdateToggleText();
+        ToggleSwitch toggleSwitch = CreateBoundToggleSwitch(vm);
 
         grid.Children.Add(title);
         Grid.SetColumn(title, 0);
-        grid.Children.Add(toggleButton);
-        Grid.SetColumn(toggleButton, 1);
+        grid.Children.Add(toggleSwitch);
+        Grid.SetColumn(toggleSwitch, 1);
 
         return grid;
+    }
+
+    // A switch reads as on/off at a glance; the old "Enabled"/"Disabled" buttons looked like actions
+    public static ToggleSwitch CreateBoundToggleSwitch(DisplayOptionItemViewModelBase vm)
+    {
+        ToggleSwitch toggleSwitch = new()
+        {
+            OnContent = string.Empty,
+            OffContent = string.Empty,
+            MinWidth = 0,
+            Height = StandardOptionHeight,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        BindValue(toggleSwitch, vm);
+
+        if (vm is CommandOptionItemViewModel commandVm)
+        {
+            toggleSwitch.IsCheckedChanged += (_, _) => commandVm.Command.Execute(toggleSwitch.IsChecked == true);
+        }
+
+        return toggleSwitch;
     }
 
     public static ToggleButton CreateBoundToggleButton(DisplayOptionItemViewModelBase vm, object? content = null)
@@ -279,23 +290,12 @@ public partial class OptionItemControl : UserControl
         if (!string.IsNullOrEmpty(vm.Description))
             ToolTip.SetTip(title, vm.Description);
 
-        ToggleButton toggleButton = CreateBoundToggleButton(vm);
-        toggleButton.Classes.Add("option-chip");
-        toggleButton.Height = StandardOptionHeight;
-        toggleButton.MinWidth = 76;
-        toggleButton.HorizontalAlignment = HorizontalAlignment.Right;
-
-        void UpdateToggleText()
-        {
-            toggleButton.Content = toggleButton.IsChecked == true ? "Enabled" : "Disabled";
-        }
-        UpdateToggleText();
-        toggleButton.IsCheckedChanged += (_, _) => UpdateToggleText();
+        ToggleSwitch toggleSwitch = CreateBoundToggleSwitch(vm);
 
         grid.Children.Add(title);
         Grid.SetColumn(title, 0);
-        grid.Children.Add(toggleButton);
-        Grid.SetColumn(toggleButton, 1);
+        grid.Children.Add(toggleSwitch);
+        Grid.SetColumn(toggleSwitch, 1);
 
         return grid;
     }
