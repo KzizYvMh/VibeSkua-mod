@@ -750,16 +750,30 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
             return;
         }
 
-        Log("Auto re-login triggered.");
-        bool wasRunning = Manager.ScriptRunning;
-        await Manager.StopScript();
-        bool kicked = Player.Kicked;
-        _waitForLogin = true;
-        Messenger.Send<ReloginTriggeredMessage, int>(new(kicked), (int)MessageChannels.GameEvents);
+        // Disconnect detection fires every 100ms and StopScript can take seconds: claim the relogin before awaiting,
+        // otherwise every check in that window starts its own relogin and they log each other out.
+        if (Interlocked.CompareExchange(ref _reloginStarting, 1, 0) != 0)
+            return;
 
-        int delay = (Options.SafeRelogin && kicked) ? 70000 : Options.ReloginTryDelay;
-        Relogin(delay, wasRunning);
+        try
+        {
+            Log("Auto re-login triggered.");
+            bool wasRunning = Manager.ScriptRunning;
+            await Manager.StopScript();
+            bool kicked = Player.Kicked;
+            _waitForLogin = true;
+            Messenger.Send<ReloginTriggeredMessage, int>(new(kicked), (int)MessageChannels.GameEvents);
+
+            int delay = (Options.SafeRelogin && kicked) ? 70000 : Options.ReloginTryDelay;
+            Relogin(delay, wasRunning);
+        }
+        finally
+        {
+            Volatile.Write(ref _reloginStarting, 0);
+        }
     }
+
+    private int _reloginStarting;
 
     private async void BeginLogout()
     {
